@@ -13,16 +13,17 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            min-height: 100vh;
         }
         .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
+            max-width: 1200px;
+            width: 90%;
+            margin: 20px auto;
         }
         h1 {
             text-align: center;
@@ -32,13 +33,18 @@
             display: block;
             margin-top: 10px;
         }
-        .input-group {
+        .input-group, .metric-group {
             display: flex;
-            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .input-item, .metric-item {
+            flex: 0 1 calc(50% - 10px);
             margin-bottom: 15px;
         }
         input[type="number"], input[type="range"] {
-            flex: 1;
+            width: calc(50% - 10px);
             margin-left: 10px;
         }
         button {
@@ -67,7 +73,7 @@
         }
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 200px;
+            width: 220px;
             background-color: #555;
             color: #fff;
             text-align: center;
@@ -77,7 +83,7 @@
             z-index: 1;
             bottom: 100%; 
             left: 50%;
-            margin-left: -100px;
+            margin-left: -110px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -88,7 +94,7 @@
         .chart {
             margin-top: 20px;
         }
-        #high-contrast {
+        #dark-mode-toggle {
             position: fixed;
             top: 10px;
             right: 10px;
@@ -99,65 +105,95 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #high-contrast.active {
+        #dark-mode-toggle.active {
             background-color: #000;
             color: #FFF;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        body.dark-mode .container {
+            background-color: #444;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <button id="high-contrast" onclick="toggleHighContrast()">High Contrast Mode</button>
-    <div class="container" aria-labelledby="calculator-title">
-        <h1 id="calculator-title">Interactive Metrics Calculator</h1>
+    <button id="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+    <div class="container">
+        <h1>Interactive Metrics Calculator</h1>
 
         <div class="input-group">
-            <label for="tp">True Positives (TP):</label>
-            <input type="range" id="tp-range" min="1" max="100" value="10" oninput="syncInput('tp-range', 'tp'); calculateMetrics();">
-            <input type="number" id="tp" value="10" min="1" oninput="syncRange('tp', 'tp-range'); calculateMetrics();" aria-labelledby="tp-label">
-            <div class="tooltip">?
-                <span class="tooltiptext">Number of correct positive predictions</span>
+            <div class="input-item">
+                <label for="tp">True Positives (TP):</label>
+                <input type="range" id="tp-range" min="1" max="100" value="10" oninput="syncInput('tp-range', 'tp'); calculateMetrics();">
+                <input type="number" id="tp" value="10" min="1" oninput="syncRange('tp', 'tp-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="tp-label">
+                <div class="tooltip">?
+                    <span class="tooltiptext">TP: Correct positive predictions. Formula: TP / (TP + FP)</span>
+                </div>
+            </div>
+
+            <div class="input-item">
+                <label for="tn">True Negatives (TN):</label>
+                <input type="range" id="tn-range" min="1" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
+                <input type="number" id="tn" value="10" min="1" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="tn-label">
+                <div class="tooltip">?
+                    <span class="tooltiptext">TN: Correct negative predictions. Formula: TN / (TN + FN)</span>
+                </div>
             </div>
         </div>
 
         <div class="input-group">
-            <label for="tn">True Negatives (TN):</label>
-            <input type="range" id="tn-range" min="1" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
-            <input type="number" id="tn" value="10" min="1" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" aria-labelledby="tn-label">
-            <div class="tooltip">?
-                <span class="tooltiptext">Number of correct negative predictions</span>
+            <div class="input-item">
+                <label for="fp">False Positives (FP):</label>
+                <input type="range" id="fp-range" min="1" max="100" value="5" oninput="syncInput('fp-range', 'fp'); calculateMetrics();">
+                <input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="fp-label">
+                <div class="tooltip">?
+                    <span class="tooltiptext">FP: Incorrect positive predictions.</span>
+                </div>
             </div>
-        </div>
 
-        <div class="input-group">
-            <label for="fp">False Positives (FP):</label>
-            <input type="range" id="fp-range" min="1" max="100" value="5" oninput="syncInput('fp-range', 'fp'); calculateMetrics();">
-            <input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range'); calculateMetrics();" aria-labelledby="fp-label">
-            <div class="tooltip">?
-                <span class="tooltiptext">Number of incorrect positive predictions</span>
-            </div>
-        </div>
-
-        <div class="input-group">
-            <label for="fn">False Negatives (FN):</label>
-            <input type="range" id="fn-range" min="1" max="100" value="5" oninput="syncInput('fn-range', 'fn'); calculateMetrics();">
-            <input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range'); calculateMetrics();" aria-labelledby="fn-label">
-            <div class="tooltip">?
-                <span class="tooltiptext">Number of incorrect negative predictions</span>
+            <div class="input-item">
+                <label for="fn">False Negatives (FN):</label>
+                <input type="range" id="fn-range" min="1" max="100" value="5" oninput="syncInput('fn-range', 'fn'); calculateMetrics();">
+                <input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="fn-label">
+                <div class="tooltip">?
+                    <span class="tooltiptext">FN: Incorrect negative predictions.</span>
+                </div>
             </div>
         </div>
 
         <div class="result" id="result" aria-live="polite">
-            <!-- Results will be displayed here -->
+            <div class="metric-group">
+                <div class="metric-item">
+                    <p><strong>Accuracy</strong> <span class="tooltip">?<span class="tooltiptext">Accuracy: (TP + TN) / (TP + TN + FP + FN)</span></span></p>
+                    <p id="accuracy-result"></p>
+                </div>
+                <div class="metric-item">
+                    <p><strong>Precision</strong> <span class="tooltip">?<span class="tooltiptext">Precision: TP / (TP + FP)</span></span></p>
+                    <p id="precision-result"></p>
+                </div>
+                <div class="metric-item">
+                    <p><strong>Recall</strong> <span class="tooltip">?<span class="tooltiptext">Recall: TP / (TP + FN)</span></span></p>
+                    <p id="recall-result"></p>
+                </div>
+                <div class="metric-item">
+                    <p><strong>Specificity</strong> <span class="tooltip">?<span class="tooltiptext">Specificity: TN / (TN + FP)</span></span></p>
+                    <p id="specificity-result"></p>
+                </div>
+                <div class="metric-item">
+                    <p><strong>NPV</strong> <span class="tooltip">?<span class="tooltiptext">NPV: TN / (TN + FN)</span></span></p>
+                    <p id="npv-result"></p>
+                </div>
+                <div class="metric-item">
+                    <p><strong>F1 Score</strong> <span class="tooltip">?<span class="tooltiptext">F1 Score: 2 * (Precision * Recall) / (Precision + Recall)</span></span></p>
+                    <p id="f1-result"></p>
+                </div>
+            </div>
         </div>
 
         <canvas id="metricsChart" class="chart"></canvas>
-
-        <h2>Feedback</h2>
-        <form action="https://formspree.io/YOUREMAIL" method="POST">
-            <label for="feedback">Your feedback:</label>
-            <textarea id="feedback" name="feedback" rows="4" style="width: 100%;"></textarea>
-            <button type="submit">Submit Feedback</button>
-        </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -184,14 +220,12 @@
             const npv = tn / (tn + fn);
             const f1_score = 2 * (precision * recall) / (precision + recall);
 
-            document.getElementById('result').innerHTML = `
-                <p><strong>Accuracy:</strong> ${accuracy.toFixed(2)}</p>
-                <p><strong>Precision:</strong> ${precision.toFixed(2)}</p>
-                <p><strong>Recall:</strong> ${recall.toFixed(2)}</p>
-                <p><strong>Specificity:</strong> ${specificity.toFixed(2)}</p>
-                <p><strong>NPV:</strong> ${npv.toFixed(2)}</p>
-                <p><strong>F1 Score:</strong> ${f1_score.toFixed(2)}</p>
-            `;
+            document.getElementById('accuracy-result').innerText = accuracy.toFixed(2);
+            document.getElementById('precision-result').innerText = precision.toFixed(2);
+            document.getElementById('recall-result').innerText = recall.toFixed(2);
+            document.getElementById('specificity-result').innerText = specificity.toFixed(2);
+            document.getElementById('npv-result').innerText = npv.toFixed(2);
+            document.getElementById('f1-result').innerText = f1_score.toFixed(2);
 
             updateChart([accuracy, precision, recall, specificity, npv, f1_score]);
         }
@@ -223,17 +257,15 @@
             });
         }
 
-        function toggleHighContrast() {
+        function toggleDarkMode() {
             const body = document.body;
-            const button = document.getElementById('high-contrast');
-            if (body.classList.contains('high-contrast')) {
-                body.classList.remove('high-contrast');
-                button.classList.remove('active');
-            } else {
-                body.classList.add('high-contrast');
-                button.classList.add('active');
-            }
+            const button = document.getElementById('dark-mode-toggle');
+            body.classList.toggle('dark-mode');
+            button.classList.toggle('active');
         }
+
+        // Initial calculation
+        calculateMetrics();
     </script>
 </body>
 </html>
