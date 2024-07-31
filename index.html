@@ -32,12 +32,14 @@
             display: block;
             margin-top: 10px;
         }
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+        .input-group {
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
-            box-sizing: border-box;
+        }
+        input[type="number"], input[type="range"] {
+            flex: 1;
+            margin-left: 10px;
         }
         button {
             background-color: #007BFF;
@@ -58,23 +60,72 @@
             background-color: #e9ecef;
             border-radius: 5px;
         }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%; 
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Interactive Metrics Calculator</h1>
-        
-        <label for="tp">True Positives (TP):</label>
-        <input type="number" id="tp" value="10">
 
-        <label for="tn">True Negatives (TN):</label>
-        <input type="number" id="tn" value="10">
+        <div class="input-group">
+            <label for="tp">True Positives (TP):</label>
+            <input type="range" id="tp-range" min="1" max="100" value="10" oninput="syncInput('tp-range', 'tp')">
+            <input type="number" id="tp" value="10" min="1" oninput="syncRange('tp', 'tp-range')">
+            <div class="tooltip">?
+                <span class="tooltiptext">Number of correct positive predictions</span>
+            </div>
+        </div>
 
-        <label for="fp">False Positives (FP):</label>
-        <input type="number" id="fp" value="5">
+        <div class="input-group">
+            <label for="tn">True Negatives (TN):</label>
+            <input type="range" id="tn-range" min="1" max="100" value="10" oninput="syncInput('tn-range', 'tn')">
+            <input type="number" id="tn" value="10" min="1" oninput="syncRange('tn', 'tn-range')">
+            <div class="tooltip">?
+                <span class="tooltiptext">Number of correct negative predictions</span>
+            </div>
+        </div>
 
-        <label for="fn">False Negatives (FN):</label>
-        <input type="number" id="fn" value="5">
+        <div class="input-group">
+            <label for="fp">False Positives (FP):</label>
+            <input type="range" id="fp-range" min="1" max="100" value="5" oninput="syncInput('fp-range', 'fp')">
+            <input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range')">
+            <div class="tooltip">?
+                <span class="tooltiptext">Number of incorrect positive predictions</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="fn">False Negatives (FN):</label>
+            <input type="range" id="fn-range" min="1" max="100" value="5" oninput="syncInput('fn-range', 'fn')">
+            <input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range')">
+            <div class="tooltip">?
+                <span class="tooltiptext">Number of incorrect negative predictions</span>
+            </div>
+        </div>
 
         <button onclick="calculateMetrics()">Calculate</button>
 
@@ -84,6 +135,15 @@
     </div>
 
     <script>
+        function syncInput(rangeId, inputId) {
+            document.getElementById(inputId).value = document.getElementById(rangeId).value;
+        }
+
+        function syncRange(inputId, rangeId) {
+            const value = document.getElementById(inputId).value;
+            document.getElementById(rangeId).value = value >= 1 ? value : 1; // Ensure positive numbers
+        }
+
         function calculateMetrics() {
             const tp = parseFloat(document.getElementById('tp').value);
             const tn = parseFloat(document.getElementById('tn').value);
