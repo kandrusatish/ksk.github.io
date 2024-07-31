@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Metrics Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #007BFF;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Metrics Calculator</h1>
+        
+        <label for="tp">True Positives (TP):</label>
+        <input type="number" id="tp" value="10">
+
+        <label for="tn">True Negatives (TN):</label>
+        <input type="number" id="tn" value="10">
+
+        <label for="fp">False Positives (FP):</label>
+        <input type="number" id="fp" value="5">
+
+        <label for="fn">False Negatives (FN):</label>
+        <input type="number" id="fn" value="5">
+
+        <button onclick="calculateMetrics()">Calculate</button>
+
+        <div class="result" id="result">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        function calculateMetrics() {
+            const tp = parseFloat(document.getElementById('tp').value);
+            const tn = parseFloat(document.getElementById('tn').value);
+            const fp = parseFloat(document.getElementById('fp').value);
+            const fn = parseFloat(document.getElementById('fn').value);
+
+            const accuracy = (tp + tn) / (tp + tn + fp + fn);
+            const precision = tp / (tp + fp);
+            const recall = tp / (tp + fn);
+            const specificity = tn / (tn + fp);
+            const npv = tn / (tn + fn);
+            const f1_score = 2 * (precision * recall) / (precision + recall);
+
+            document.getElementById('result').innerHTML = `
+                <p><strong>Accuracy:</strong> ${accuracy.toFixed(2)}</p>
+                <p><strong>Precision:</strong> ${precision.toFixed(2)}</p>
+                <p><strong>Recall:</strong> ${recall.toFixed(2)}</p>
+                <p><strong>Specificity:</strong> ${specificity.toFixed(2)}</p>
+                <p><strong>NPV:</strong> ${npv.toFixed(2)}</p>
+                <p><strong>F1 Score:</strong> ${f1_score.toFixed(2)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
