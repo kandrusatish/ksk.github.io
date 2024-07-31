@@ -29,10 +29,6 @@
             text-align: center;
             color: #007BFF;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
         .input-group, .metric-group {
             display: flex;
             justify-content: space-between;
@@ -41,10 +37,21 @@
         }
         .input-item, .metric-item {
             flex: 0 1 calc(50% - 10px);
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
         }
+        label {
+            flex: 1;
+            margin-right: 10px;
+        }
         input[type="number"], input[type="range"] {
-            width: calc(50% - 10px);
+            flex: 1;
+        }
+        p {
+            margin: 0;
+        }
+        .metric-item p {
             margin-left: 10px;
         }
         button {
@@ -98,16 +105,25 @@
             position: fixed;
             top: 10px;
             right: 10px;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            width: 60px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 15px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5px;
         }
-        #dark-mode-toggle.active {
-            background-color: #000;
-            color: #FFF;
+        #dark-mode-toggle span {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        #dark-mode-toggle.active span {
+            transform: translateX(30px);
         }
         body.dark-mode {
             background-color: #333;
@@ -117,10 +133,15 @@
             background-color: #444;
             color: #fff;
         }
+        body.dark-mode .result {
+            background-color: #555;
+        }
     </style>
 </head>
 <body>
-    <button id="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+    <div id="dark-mode-toggle" onclick="toggleDarkMode()">
+        <span></span>
+    </div>
     <div class="container">
         <h1>Interactive Metrics Calculator</h1>
 
@@ -130,7 +151,7 @@
                 <input type="range" id="tp-range" min="1" max="100" value="10" oninput="syncInput('tp-range', 'tp'); calculateMetrics();">
                 <input type="number" id="tp" value="10" min="1" oninput="syncRange('tp', 'tp-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="tp-label">
                 <div class="tooltip">?
-                    <span class="tooltiptext">TP: Correct positive predictions. Formula: TP / (TP + FP)</span>
+                    <span class="tooltiptext">True Positives: Correct positive predictions.</span>
                 </div>
             </div>
 
@@ -139,7 +160,7 @@
                 <input type="range" id="tn-range" min="1" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
                 <input type="number" id="tn" value="10" min="1" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="tn-label">
                 <div class="tooltip">?
-                    <span class="tooltiptext">TN: Correct negative predictions. Formula: TN / (TN + FN)</span>
+                    <span class="tooltiptext">True Negatives: Correct negative predictions.</span>
                 </div>
             </div>
         </div>
@@ -150,7 +171,7 @@
                 <input type="range" id="fp-range" min="1" max="100" value="5" oninput="syncInput('fp-range', 'fp'); calculateMetrics();">
                 <input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="fp-label">
                 <div class="tooltip">?
-                    <span class="tooltiptext">FP: Incorrect positive predictions.</span>
+                    <span class="tooltiptext">False Positives: Incorrect positive predictions.</span>
                 </div>
             </div>
 
@@ -159,7 +180,7 @@
                 <input type="range" id="fn-range" min="1" max="100" value="5" oninput="syncInput('fn-range', 'fn'); calculateMetrics();">
                 <input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range'); calculateMetrics();" onkeydown="return event.keyCode !== 69 && event.keyCode !== 189" aria-labelledby="fn-label">
                 <div class="tooltip">?
-                    <span class="tooltiptext">FN: Incorrect negative predictions.</span>
+                    <span class="tooltiptext">False Negatives: Incorrect negative predictions.</span>
                 </div>
             </div>
         </div>
@@ -167,27 +188,27 @@
         <div class="result" id="result" aria-live="polite">
             <div class="metric-group">
                 <div class="metric-item">
-                    <p><strong>Accuracy</strong> <span class="tooltip">?<span class="tooltiptext">Accuracy: (TP + TN) / (TP + TN + FP + FN)</span></span></p>
+                    <p><strong>Accuracy</strong> <span class="tooltip">?<span class="tooltiptext">Accuracy: Proportion of correct predictions (TP + TN) / (TP + TN + FP + FN).</span></span></p>
                     <p id="accuracy-result"></p>
                 </div>
                 <div class="metric-item">
-                    <p><strong>Precision</strong> <span class="tooltip">?<span class="tooltiptext">Precision: TP / (TP + FP)</span></span></p>
+                    <p><strong>Precision</strong> <span class="tooltip">?<span class="tooltiptext">Precision: Proportion of correct positive predictions TP / (TP + FP).</span></span></p>
                     <p id="precision-result"></p>
                 </div>
                 <div class="metric-item">
-                    <p><strong>Recall</strong> <span class="tooltip">?<span class="tooltiptext">Recall: TP / (TP + FN)</span></span></p>
+                    <p><strong>Recall</strong> <span class="tooltip">?<span class="tooltiptext">Recall: Proportion of actual positives correctly identified TP / (TP + FN).</span></span></p>
                     <p id="recall-result"></p>
                 </div>
                 <div class="metric-item">
-                    <p><strong>Specificity</strong> <span class="tooltip">?<span class="tooltiptext">Specificity: TN / (TN + FP)</span></span></p>
+                    <p><strong>Specificity</strong> <span class="tooltip">?<span class="tooltiptext">Specificity: Proportion of actual negatives correctly identified TN / (TN + FP).</span></span></p>
                     <p id="specificity-result"></p>
                 </div>
                 <div class="metric-item">
-                    <p><strong>NPV</strong> <span class="tooltip">?<span class="tooltiptext">NPV: TN / (TN + FN)</span></span></p>
+                    <p><strong>NPV</strong> <span class="tooltip">?<span class="tooltiptext">NPV: Proportion of predicted negatives that are correct TN / (TN + FN).</span></span></p>
                     <p id="npv-result"></p>
                 </div>
                 <div class="metric-item">
-                    <p><strong>F1 Score</strong> <span class="tooltip">?<span class="tooltiptext">F1 Score: 2 * (Precision * Recall) / (Precision + Recall)</span></span></p>
+                    <p><strong>F1 Score</strong> <span class="tooltip">?<span class="tooltiptext">F1 Score: Harmonic mean of Precision and Recall 2 * (Precision * Recall) / (Precision + Recall).</span></span></p>
                     <p id="f1-result"></p>
                 </div>
             </div>
@@ -242,15 +263,36 @@
                     datasets: [{
                         label: 'Metrics',
                         data: data,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.2)' : 'rgba(54, 162, 235, 0.2)',
+                        borderColor: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 1)' : 'rgba(54, 162, 235, 1)',
                         borderWidth: 1
                     }]
                 },
                 options: {
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            grid: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#666' : '#ddd'
+                            },
+                            ticks: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#666' : '#ddd'
+                            },
+                            ticks: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#000'
+                            }
                         }
                     }
                 }
@@ -259,9 +301,14 @@
 
         function toggleDarkMode() {
             const body = document.body;
-            const button = document.getElementById('dark-mode-toggle');
+            const toggleSwitch = document.getElementById('dark-mode-toggle').querySelector('span');
             body.classList.toggle('dark-mode');
-            button.classList.toggle('active');
+            if (body.classList.contains('dark-mode')) {
+                toggleSwitch.style.transform = 'translateX(30px)';
+            } else {
+                toggleSwitch.style.transform = 'translateX(0)';
+            }
+            calculateMetrics();  // Recalculate metrics to update chart colors
         }
 
         // Initial calculation
