@@ -18,7 +18,7 @@
             --dark-mode-container-bg-color: #444;
             --dark-mode-input-bg-color: #555;
             --dark-mode-result-bg-color: #666;
-			--label-color: #555; /* New variable for label color */
+            --label-color: #555;
         }
         
         body {
@@ -44,12 +44,13 @@
             margin: 40px auto;
         }
 
-		h1 {
-			text-align: center;
-			color: var(--primary-color); /* Updated to use the blue color */
-			margin-bottom: 20px;
-			font-size: 1.75rem;
-		}
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.75rem;
+            animation: fadeInDown 1s ease-out;
+        }
 
         .input-section {
             background-color: var(--input-bg-color);
@@ -59,6 +60,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+            animation: fadeInUp 1s ease-out;
         }
 
         .input-section__item {
@@ -70,12 +72,12 @@
         }
 
         label {
-			font-weight: 500;
-			margin-right: 10px;
-			color: var(--label-color); /* Updated to use the new variable */
-			white-space: nowrap;
-			flex-shrink: 0;
-		}
+            font-weight: 500;
+            margin-right: 10px;
+            color: var(--label-color);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
 
         input[type="number"] {
             width: 60px;
@@ -112,174 +114,259 @@
             background-color: var(--input-bg-color);
             border-radius: 8px;
             color: var(--text-color);
+            animation: fadeIn 1s ease-out;
         }
 
         .metric-group {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: 20px;
-			width: 100%;
-			box-sizing: border-box;
-		}
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-		.metric-group__item {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 15px;
-			border-radius: 5px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			background: transparent;
-		}
+        .metric-group__item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: transparent;
+            animation: fadeIn 1s ease-out;
+        }
 
-		.metric-group__label {
-			display: flex;
-			align-items: center;
-			flex-basis: 50%;
-		}
+        .metric-group__label {
+            display: flex;
+            align-items: center;
+            flex-basis: 50%;
+        }
 
-		.metric-group__label strong {
-			margin-right: 5px;
-			color: var(--label-color); /* Same color as input field labels */
-		}
+        .metric-group__label strong {
+            margin-right: 5px;
+            color: var(--label-color);
+        }
 
-		.metric-group__value {
-			flex-basis: 50%;
-			display: flex;
-			justify-content: flex-end;
-			font-size: 1.1rem;
-			font-weight: 500;
-			color: var(--label-color); /* Same color as input field labels */
-		}
+        .metric-group__value {
+            flex-basis: 50%;
+            display: flex;
+            justify-content: flex-end;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--label-color);
+        }
 
-		.tooltip {
-			position: relative;
-			cursor: pointer;
-			color: var(--primary-color);
-			font-size: 0.9rem;
-			margin-left: 5px;
-		}
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
 
-		.tooltip .tooltiptext {
-			visibility: hidden;
-			width: 200px;
-			background-color: var(--tooltip-bg-color);
-			color: #fff;
-			text-align: center;
-			border-radius: 6px;
-			padding: 5px;
-			position: absolute;
-			z-index: 1;
-			bottom: 100%; 
-			left: 50%;
-			margin-left: -100px;
-			opacity: 0;
-			transition: opacity 0.3s;
-		}
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--tooltip-bg-color);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 100%; 
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-		.tooltip:hover .tooltiptext {
-			visibility: visible;
-			opacity: 1;
-		}
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .chart-container {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .chart {
+            height: 100px;
+            width: 100%;
+            animation: fadeInUp 1s ease-out;
+        }
 		
-		.chart-container {
-			background-color: #e9ecef; /* Light background color */
+		/* Insights Panel Styling */
+		.insights-panel {
+			background-color: var(--input-bg-color);
 			padding: 20px;
 			border-radius: 8px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
 			margin-top: 20px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			color: var(--text-color);
+			animation: fadeInUp 1s ease-out; /* Adding animation */
 		}
 
-		.chart {
-			height: 100px;
-			width: 100%;
+		.insights-panel h2 {
+			margin-bottom: 10px;
+			font-size: 1.5rem;
+			color: var(--primary-color);
+		}
+
+		.insight {
+			margin-bottom: 10px;
+			font-size: 1rem;
+			color: var(--text-color);
+			display: flex;
+			align-items: center;
+			animation: fadeIn 0.8s ease-out; /* Adding animation */
+		}
+
+		.insight-icon {
+			margin-right: 8px;
+			font-size: 1.2rem;
 		}
 
         #dark-mode-toggle {
-			position: fixed;
-			top: 15px;
-			right: 15px;
-			width: 50px;
-			height: 30px;
-			background-color: #ccc;
-			border-radius: 15px;
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0 5px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 50px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-		#dark-mode-toggle span {
-			width: 25px;
-			height: 25px;
-			background-color: white;
-			border-radius: 50%;
-			transition: transform 0.3s;
-		}
+        #dark-mode-toggle span {
+            width: 25px;
+            height: 25px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
 
-		#dark-mode-toggle.active span {
-			transform: translateX(25px);
-		}
+        #dark-mode-toggle.active span {
+            transform: translateX(25px);
+        }
 
-		.dark-mode {
-			background-color: var(--dark-mode-bg-color);
+        .dark-mode {
+            background-color: var(--dark-mode-bg-color);
+            color: var(--dark-mode-text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark-mode main {
+            background-color: var(--dark-mode-container-bg-color);
+        }
+
+        .dark-mode .input-section {
+            background-color: var(--dark-mode-input-bg-color);
+            color: var(--dark-mode-text-color);
+        }
+
+        .dark-mode .result {
+            background-color: var(--dark-mode-result-bg-color);
+            color: var(--dark-mode-text-color);
+        }
+
+        .dark-mode .metric-group__label strong,
+        .dark-mode .metric-group__value {
+            color: var(--dark-mode-text-color);
+        }
+
+        .dark-mode .metric-group__value {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .tooltip {
+            color: var(--primary-color);
+        }
+
+        .dark-mode .input-section__item label {
+            color: var(--dark-mode-text-color);
+        }
+
+        .dark-mode input[type="number"], 
+        .dark-mode input[type="range"] {
+            background-color: var(--dark-mode-input-bg-color);
+            color: var(--dark-mode-text-color);
+            border-color: #888;
+        }
+
+        .dark-mode input[type="number"]::placeholder {
+            color: var(--dark-mode-text-color);
+        }
+
+        .dark-mode h1 {
+            color: var(--primary-color);
+        }
+
+        .dark-mode .chart-container {
+            background-color: var(--dark-mode-input-bg-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+		
+		/* Dark Mode Styles */
+		.dark-mode .insights-panel {
+			background-color: var(--dark-mode-input-bg-color);
 			color: var(--dark-mode-text-color);
 		}
 
-		.dark-mode main {
-			background-color: var(--dark-mode-container-bg-color);
+		.dark-mode .insights-panel h2 {
+			color: var(--primary-color);
 		}
 
-		.dark-mode .input-section {
-			background-color: var(--dark-mode-input-bg-color);
-			color: var(--dark-mode-text-color); /* Ensures the text within input sections is readable */
-		}
-
-		.dark-mode .result {
-			background-color: var(--dark-mode-result-bg-color);
-			color: var(--dark-mode-text-color); /* Ensures text in result sections is readable */
-		}
-
-		.dark-mode .metric-group__label strong,
-		.dark-mode .metric-group__value {
-			color: var(--dark-mode-text-color); /* Ensure metric labels and values are visible */
-		}
-
-		.dark-mode .metric-group__value {
-			background-color: rgba(255, 255, 255, 0.1); /* Slightly lighten the background of metric values for readability */
-		}
-
-		.dark-mode .tooltip {
-			color: var(--primary-color); /* Keep tooltips visible in dark mode */
-		}
-
-		.dark-mode .input-section__item label {
-			color: var(--dark-mode-text-color); /* Ensure labels are visible */
-		}
-
-		.dark-mode input[type="number"], 
-		.dark-mode input[type="range"] {
-			background-color: var(--dark-mode-input-bg-color);
+		.dark-mode .insight {
 			color: var(--dark-mode-text-color);
-			border-color: #888;
 		}
 
-		.dark-mode input[type="number"]::placeholder {
-			color: var(--dark-mode-text-color); /* Ensure placeholder text is visible */
+		.dark-mode .insight-icon {
+			color: var(--dark-mode-text-color);
 		}
 
-		.dark-mode h1 {
-			color: var(--primary-color); /* Title remains blue to stand out in dark mode */
-		}
+        /* Keyframe Animations */
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-		.dark-mode .chart-container {
-			background-color: var(--dark-mode-input-bg-color); /* Match the chart container background to the input sections */
-			border-radius: 8px;
-			padding: 20px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-		}
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -287,7 +374,7 @@
         <span></span>
     </div>
     <main>
-        <h1>Interactive Metrics Calculator</h1>
+        <h1>Data Science Statistical Metrics Analyser</h1>
 
         <section class="input-section">
             <div class="input-section__item">
@@ -316,59 +403,66 @@
         </section>
 
         <section class="result" id="result" aria-live="polite">
-			<div class="metric-group">
-				<div class="metric-group__item">
-					<div class="metric-group__label">
-						<strong>F1 Score</strong>
-						<span class="tooltip">?<span class="tooltiptext">Harmonic mean of Precision and Recall. Formula: 2 * (Precision * Recall) / (Precision + Recall).</span></span>
-					</div>
-					<div class="metric-group__value" id="f1-result">0.67</div>
-				</div>
-				<div class="metric-group__item">
-					<div class="metric-group__label">
-						<strong>Accuracy</strong>
-						<span class="tooltip">?<span class="tooltiptext">Overall correctness of predictions. Formula: (TP + TN) / (TP + TN + FP + FN).</span></span>
-					</div>
-					<div class="metric-group__value" id="accuracy-result">0.67</div>
-				</div>
-			</div>
-			<div class="metric-group">
-				<div class="metric-group__item">
-					<div class="metric-group__label">
-						<strong>Precision</strong>
-						<span class="tooltip">?<span class="tooltiptext">Reliability of positive predictions. Formula: TP / (TP + FP).</span></span>
-					</div>
-					<div class="metric-group__value" id="precision-result">0.67</div>
-				</div>
-				<div class="metric-group__item">
-					<div class="metric-group__label">
-						<strong>NPV</strong>
-						<span class="tooltip">?<span class="tooltiptext">Reliability of negative predictions. Formula: TN / (TN + FN).</span></span>
-					</div>
-					<div class="metric-group__value" id="npv-result">0.67</div>
-				</div>
-			</div>
-			<div class="metric-group">
-				<div class="metric-group__item">
-					<div class="metric-group__label">
-						<strong>Recall</strong>
-						<span class="tooltip">?<span class="tooltiptext">Ability to find all positive instances. Formula: TP / (TP + FN).</span></span>
-					</div>
-					<div class="metric-group__value" id="recall-result">0.67</div>
-				</div>
-				<div class="metric-group__item">
-					<div class="metric-group__label">
-						<strong>Specificity</strong>
-						<span class="tooltip">?<span class="tooltiptext">Ability to find all negative instances. Formula: TN / (TN + FP).</span></span>
-					</div>
-					<div class="metric-group__value" id="specificity-result">0.67</div>
-				</div>
-			</div>
+            <div class="metric-group">
+                <div class="metric-group__item">
+                    <div class="metric-group__label">
+                        <strong>F1 Score</strong>
+                        <span class="tooltip">?<span class="tooltiptext">Harmonic mean of Precision and Recall. Formula: 2 * (Precision * Recall) / (Precision + Recall).</span></span>
+                    </div>
+                    <div class="metric-group__value" id="f1-result">0.67</div>
+                </div>
+                <div class="metric-group__item">
+                    <div class="metric-group__label">
+                        <strong>Accuracy</strong>
+                        <span class="tooltip">?<span class="tooltiptext">Overall correctness of predictions. Formula: (TP + TN) / (TP + TN + FP + FN).</span></span>
+                    </div>
+                    <div class="metric-group__value" id="accuracy-result">0.67</div>
+                </div>
+            </div>
+            <div class="metric-group">
+                <div class="metric-group__item">
+                    <div class="metric-group__label">
+                        <strong>Precision</strong>
+                        <span class="tooltip">?<span class="tooltiptext">Reliability of positive predictions. Formula: TP / (TP + FP).</span></span>
+                    </div>
+                    <div class="metric-group__value" id="precision-result">0.67</div>
+                </div>
+                <div class="metric-group__item">
+                    <div class="metric-group__label">
+                        <strong>NPV</strong>
+                        <span class="tooltip">?<span class="tooltiptext">Reliability of negative predictions. Formula: TN / (TN + FN).</span></span>
+                    </div>
+                    <div class="metric-group__value" id="npv-result">0.67</div>
+                </div>
+            </div>
+            <div class="metric-group">
+                <div class="metric-group__item">
+                    <div class="metric-group__label">
+                        <strong>Recall</strong>
+                        <span class="tooltip">?<span class="tooltiptext">Ability to find all positive instances. Formula: TP / (TP + FN).</span></span>
+                    </div>
+                    <div class="metric-group__value" id="recall-result">0.67</div>
+                </div>
+                <div class="metric-group__item">
+                    <div class="metric-group__label">
+                        <strong>Specificity</strong>
+                        <span class="tooltip">?<span class="tooltiptext">Ability to find all negative instances. Formula: TN / (TN + FP).</span></span>
+                    </div>
+                    <div class="metric-group__value" id="specificity-result">0.67</div>
+                </div>
+            </div>
+        </section>
+		
+		<!-- Insights Panel -->
+		<section class="insights-panel" id="insightsPanel">
+			<h2>Insights</h2>
+			<div id="overallSummary"></div>
+			<div id="recommendations"></div>
 		</section>
 
         <section class="chart-container">
-			<canvas id="metricsChart" class="chart"></canvas>
-		</section>
+            <canvas id="metricsChart" class="chart"></canvas>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -417,103 +511,196 @@
 
             updateChart([accuracy, precision, recall, specificity, npv, f1_score]);
         }
+		
+		function generateOverallSummary(metrics) {
+			let summary = '';
 
-        function updateMetricResults(metrics) {
-            document.getElementById('f1-result').innerText = metrics.f1_score;
-            document.getElementById('accuracy-result').innerText = metrics.accuracy;
-            document.getElementById('precision-result').innerText = metrics.precision;
-            document.getElementById('npv-result').innerText = metrics.npv;
-            document.getElementById('recall-result').innerText = metrics.recall;
-            document.getElementById('specificity-result').innerText = metrics.specificity;
-        }
+			// Summary for Accuracy
+			if (metrics.accuracy >= 0.9) {
+				summary += 'Overall, your model is performing good with a high accuracy of ' + metrics.accuracy + '. ';
+			} else if (metrics.accuracy >= 0.75) {
+				summary += 'Your model has a moderate accuracy of ' + metrics.accuracy + ', but there is room for improvement. ';
+			} else {
+				summary += 'The model accuracy is relatively low at ' + metrics.accuracy + '. Consider revisiting the model and improving its performance. ';
+			}
+
+			// Summary for F1 Score
+			if (metrics.f1_score >= 0.9) {
+				summary += 'The F1 Score of ' + metrics.f1_score + ' is good, indicating a great balance between precision and recall. ';
+			} else if (metrics.f1_score >= 0.75) {
+				summary += 'The F1 Score is ' + metrics.f1_score + ', which is moderate and may indicate some trade-offs between precision and recall. ';
+			} else {
+				summary += 'The F1 Score is relatively low at ' + metrics.f1_score + '. You might want to improve either precision or recall for better performance. ';
+			}
+
+			return summary;
+		}
+		
+		function generateRecommendations(metrics) {
+			const recommendations = [];
+
+			// Accuracy
+			if (metrics.accuracy >= 0.9) {
+				recommendations.push("✅ Accuracy is good. Maintain current methods.");
+			} else if (metrics.accuracy >= 0.75) {
+				recommendations.push("⚠️ Accuracy is moderate. There's room for improvement.");
+			} else {
+				recommendations.push("❗ Accuracy is low. Consider reviewing model features or increasing data quality.");
+			}
+
+			// Precision
+			if (metrics.precision >= 0.9) {
+				recommendations.push("✅ Precision is good, indicating reliable positive predictions.");
+			} else if (metrics.precision >= 0.75) {
+				recommendations.push("⚠️ Precision is moderate. There may be some false positives.");
+			} else {
+				recommendations.push("❗ Precision is low. Consider tuning your model to reduce false positives.");
+			}
+
+			// Recall
+			if (metrics.recall >= 0.9) {
+				recommendations.push("✅ Recall is good, capturing most positive instances.");
+			} else if (metrics.recall >= 0.75) {
+				recommendations.push("⚠️ Recall is moderate. Some positive instances are missed.");
+			} else {
+				recommendations.push("❗ Recall is low. Consider reviewing why positive instances are being missed.");
+			}
+
+			// Specificity
+			if (metrics.specificity >= 0.9) {
+				recommendations.push("✅ Specificity is good, effectively identifying negative instances.");
+			} else if (metrics.specificity >= 0.75) {
+				recommendations.push("⚠️ Specificity is moderate. There might be some false negatives.");
+			} else {
+				recommendations.push("❗ Specificity is low. Consider investigating the causes of false negatives.");
+			}
+
+			// NPV
+			if (metrics.npv >= 0.9) {
+				recommendations.push("✅ NPV is good, indicating reliable negative predictions.");
+			} else if (metrics.npv >= 0.75) {
+				recommendations.push("⚠️ NPV is moderate. There may be some inaccuracies in negative predictions.");
+			} else {
+				recommendations.push("❗ NPV is low. Consider why negative predictions might be unreliable.");
+			}
+
+			// F1 Score
+			if (metrics.f1_score >= 0.9) {
+				recommendations.push("✅ F1 Score is good, balancing precision and recall well.");
+			} else if (metrics.f1_score >= 0.75) {
+				recommendations.push("⚠️ F1 Score is moderate. There might be a trade-off between precision and recall.");
+			} else {
+				recommendations.push("❗ F1 Score is low. Investigate the balance between precision and recall.");
+			}
+
+			return recommendations;
+		}
+		
+		function updateMetricResults(metrics) {
+			document.getElementById('f1-result').innerText = metrics.f1_score;
+			document.getElementById('accuracy-result').innerText = metrics.accuracy;
+			document.getElementById('precision-result').innerText = metrics.precision;
+			document.getElementById('npv-result').innerText = metrics.npv;
+			document.getElementById('recall-result').innerText = metrics.recall;
+			document.getElementById('specificity-result').innerText = metrics.specificity;
+
+			// Generate Insights
+			const overallSummary = generateOverallSummary(metrics);
+			const recommendations = generateRecommendations(metrics);
+
+			// Display Insights
+			document.getElementById('overallSummary').innerHTML = '<div class="insight"><span class="insight-icon" style="color: #007BFF;">📜</span>' + overallSummary + '</div>';
+			document.getElementById('recommendations').innerHTML = recommendations.map(rec => '<div class="insight">' + rec + '</div>').join('');
+		}
 
         function updateChart(data) {
 			const isDarkMode = document.body.classList.contains('dark-mode');
 			const textColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-mode-text-color' : '--text-color').trim();
 			
-			const ctx = document.getElementById('metricsChart').getContext('2d');
-			if (!myChart) {
-			
-				if (myChart) {
-					myChart.destroy(); // Destroy the existing chart instance
-					myChart = null; // Set the reference to null to allow for re-creation
+			const backgroundColors = data.map(value => {
+				if (value >= 0.9) {
+					return 'rgba(75, 192, 192, 0.7)'; // Green
+				} else if (value >= 0.75 && value < 0.9) {
+					return 'rgba(255, 206, 86, 0.7)'; // Amber
+				} else {
+					return 'rgba(255, 99, 132, 0.7)'; // Red
 				}
-			
-				myChart = new Chart(ctx, {
-					type: 'bar',
-					data: {
-						labels: ['Accuracy', 'Precision', 'Recall', 'Specificity', 'NPV', 'F1 Score'],
-						datasets: [{
-							label: 'Metrics',
-							data: data,
-							backgroundColor: 'rgba(54, 162, 235, 0.7)',
-							borderColor: 'rgba(54, 162, 235, 1)',
-							borderWidth: 1,
-							barThickness: 40
-						}]
-					},
-					options: {
-						scales: {
-							x: {
-								grid: {
-									display: false
-								},
-								ticks: {
-									color: textColor,
-									font: {
-										family: "'Roboto', sans-serif",
-										size: 14
-									}
-								},
-								title: {
-									display: true,
-									text: 'Metrics',
-									color: textColor,
-									font: {
-										family: "'Roboto', sans-serif",
-										size: 16
-									}
+			});
+
+			const borderColors = backgroundColors.map(color => color.replace('0.7', '1')); // Solid borders for each
+
+			const ctx = document.getElementById('metricsChart').getContext('2d');
+			if (myChart) {
+				myChart.destroy(); // Destroy the existing chart instance
+				myChart = null; // Set the reference to null to allow for re-creation
+			}
+
+			myChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+					labels: ['Accuracy', 'Precision', 'Recall', 'Specificity', 'NPV', 'F1 Score'],
+					datasets: [{
+						label: 'Metrics',
+						data: data,
+						backgroundColor: backgroundColors,
+						borderColor: borderColors,
+						borderWidth: 1,
+						barThickness: 40
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							grid: {
+								display: false
+							},
+							ticks: {
+								color: textColor,
+								font: {
+									family: "'Roboto', sans-serif",
+									size: 14
 								}
 							},
-							y: {
-								grid: {
-									display: false
-								},
-								beginAtZero: true,
-								ticks: {
-									color: textColor,
-									font: {
-										family: "'Roboto', sans-serif",
-										size: 14
-									}
-								},
-								title: {
-									display: true,
-									text: 'Values',
-									color: textColor,
-									font: {
-										family: "'Roboto', sans-serif",
-										size: 16
-									}
+							title: {
+								display: true,
+								text: 'Metrics',
+								color: textColor,
+								font: {
+									family: "'Roboto', sans-serif",
+									size: 16
 								}
 							}
 						},
-						plugins: {
-							legend: {
+						y: {
+							grid: {
 								display: false
+							},
+							beginAtZero: true,
+							ticks: {
+								color: textColor,
+								font: {
+									family: "'Roboto', sans-serif",
+									size: 14
+								}
+							},
+							title: {
+								display: true,
+								text: 'Values',
+								color: textColor,
+								font: {
+									family: "'Roboto', sans-serif",
+									size: 16
+								}
 							}
 						}
+					},
+					plugins: {
+						legend: {
+							display: false
+						}
 					}
-				});
-			} else {
-				// Update the chart colors dynamically
-				myChart.options.scales.x.ticks.color = textColor;
-				myChart.options.scales.x.title.color = textColor;
-				myChart.options.scales.y.ticks.color = textColor;
-				myChart.options.scales.y.title.color = textColor;
-				myChart.data.datasets[0].data = data;
-				myChart.update();
-			}
+				}
+			});
 		}
 
         function initializeDarkModeToggle() {
@@ -522,23 +709,19 @@
         }
 
         function toggleDarkMode() {
-			const body = document.body;
-			const toggleSwitch = document.getElementById('dark-mode-toggle').querySelector('span');
-			const isDarkMode = body.classList.toggle('dark-mode');
+            const body = document.body;
+            const toggleSwitch = document.getElementById('dark-mode-toggle').querySelector('span');
+            const isDarkMode = body.classList.toggle('dark-mode');
 
-			toggleSwitch.style.transform = isDarkMode ? 'translateX(25px)' : 'translateX(0)';
+            toggleSwitch.style.transform = isDarkMode ? 'translateX(25px)' : 'translateX(0)';
 
-			console.log("Dark Mode Toggled:", isDarkMode); // Debugging output
+            calculateMetrics(); // Recalculate metrics to update chart colors
 
-			// Recalculate metrics to update chart colors
-			calculateMetrics();
-
-			// Update tooltip background color
-			const tooltips = document.querySelectorAll('.tooltip .tooltiptext');
-			tooltips.forEach(tooltip => {
-				tooltip.style.backgroundColor = isDarkMode ? '#555' : '#333';
-			});
-		}
+            const tooltips = document.querySelectorAll('.tooltip .tooltiptext');
+            tooltips.forEach(tooltip => {
+                tooltip.style.backgroundColor = isDarkMode ? '#555' : '#333';
+            });
+        }
 
         function updateChartColors(color) {
             Chart.defaults.color = color;
