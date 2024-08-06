@@ -53,60 +53,133 @@
         }
 
         .input-section {
-            background-color: var(--input-bg-color);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            animation: fadeInUp 1s ease-out;
-        }
+			background-color: var(--input-bg-color);
+			padding: 20px;
+			border-radius: 8px;
+			margin-bottom: 20px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			animation: fadeInUp 1s ease-out;
+		}
 
-        .input-section__item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-basis: calc(50% - 10px);
-            box-sizing: border-box;
-        }
+		.input-container {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			margin-right: 10px; /* Add some space between the containers */
+		}
 
-        label {
-            font-weight: 500;
-            margin-right: 10px;
-            color: var(--label-color);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
+		.input-container:last-child {
+			margin-right: 0; /* Remove margin for the last container to prevent extra space */
+		}
 
-        input[type="number"] {
-            width: 60px;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ced4da;
-            transition: border-color 0.3s;
-            margin-left: 10px;
-            box-sizing: border-box;
-        }
+		.input-section__item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20px;
+		}
 
-        input[type="range"] {
-            flex: 1;
-            margin-right: 10px;
-        }
+		label {
+			font-weight: 500;
+			margin-right: 10px;
+			color: var(--label-color);
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
 
-        input[type="number"]:focus, input[type="range"]:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
+		input[type="number"] {
+			width: 60px;
+			padding: 8px;
+			border-radius: 5px;
+			border: 1px solid #ced4da;
+			transition: border-color 0.3s;
+			margin-left: 10px;
+			box-sizing: border-box;
+		}
 
-        input[type="range"]::-webkit-slider-thumb {
-            width: 15px;
-            height: 15px;
-            background: var(--primary-color);
-            cursor: pointer;
-            border-radius: 50%;
-        }
+		input[type="range"] {
+			flex: 1;
+			margin-right: 10px;
+		}
+
+		input[type="number"]:focus, input[type="range"]:focus {
+			border-color: var(--primary-color);
+			outline: none;
+			box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+		}
+
+		input[type="range"]::-webkit-slider-thumb {
+			width: 15px;
+			height: 15px;
+			background: var(--primary-color);
+			cursor: pointer;
+			border-radius: 50%;
+		}
+		
+		/* Adjusted class for total metrics display */
+		.total-metrics {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr); /* Four equal columns */
+			gap: 20px; /* Reduced gap for better spacing */
+			align-items: center;
+			padding: 15px;
+			background-color: var(--input-bg-color);
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			margin-top: 20px;
+			animation: fadeInUp 1s ease-out;
+		}
+
+		.total-metrics__item {
+			text-align: center;
+			animation: fadeInUp 1s ease-out;
+		}
+
+		.total-metrics__item label {
+			font-weight: 700;
+			color: var(--label-color);
+			display: block; /* Ensure labels and spans stack vertically */
+			margin-bottom: 5px; /* Add some space between label and value */
+		}
+
+		.total-metrics__item span {
+			display: block;
+			font-size: 1.2rem;
+			font-weight: 500;
+		}
+
+		.balance-bar {
+			position: relative;
+			width: 80%; /* Adjust width for better alignment */
+			height: 8px;
+			background-color: #ccc; /* Light gray color for better visibility in light mode */
+			border-radius: 4px;
+			margin: 10px auto; /* Center it horizontally */
+		}
+
+		.balance-marker {
+			position: absolute;
+			width: 16px;
+			height: 16px;
+			background-color: #007BFF;
+			border-radius: 50%;
+			top: -4px; /* Adjust to center the marker vertically */
+			left: 50%; /* Center the marker by default */
+			transform: translateX(-50%);
+			transition: left 0.3s ease;
+		}
+
+		.ideal-marker {
+			position: absolute;
+			width: 2px;
+			height: 16px;
+			background-color: #FF6347; /* A different color, like tomato red, to stand out */
+			top: -4px; /* Adjust to center the marker vertically */
+			left: 50%; /* Adjust this to represent the ideal position */
+			transform: translateX(-50%);
+		}
 
         .result {
             margin-top: 20px;
@@ -155,36 +228,105 @@
             font-weight: 500;
             color: var(--label-color);
         }
+		
+		.metric-value-green {
+			background-color: rgba(75, 192, 192, 0.2); /* Light green background */
+			color: #3c763d; /* Dark green text */
+			border-radius: 4px;
+			padding: 5px;
+		}
 
-        .tooltip {
-            position: relative;
-            cursor: pointer;
-            color: var(--primary-color);
-            font-size: 0.9rem;
-            margin-left: 5px;
-        }
+		.metric-value-amber {
+			background-color: rgba(255, 206, 86, 0.2); /* Light amber background */
+			color: #8a6d3b; /* Dark amber text */
+			border-radius: 4px;
+			padding: 5px;
+		}
 
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--tooltip-bg-color);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 100%; 
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+		.metric-value-red {
+			background-color: rgba(255, 99, 132, 0.2); /* Light red background */
+			color: #a94442; /* Dark red text */
+			border-radius: 4px;
+			padding: 5px;
+		}
 
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
+        /* Tooltip Container */
+		.tooltip {
+			position: relative;
+			cursor: pointer;
+			margin-left: 5px;
+			display: inline-block;
+		}
+
+		/* Tooltip Icon (optional, you can use a simple "?" or "i" character) */
+		.tooltip::before {
+			content: "ℹ️"; /* Can be replaced with an icon or text */
+			font-size: 1.2rem;
+			color: #007BFF; /* Blue color */
+			vertical-align: middle;
+		}
+
+		/* Tooltip Content Box */
+		.tooltip .tooltiptext {
+			visibility: hidden;
+			width: 250px; /* Adjust width */
+			background-color: #333;
+			color: #fff;
+			text-align: left; /* Align text to the left for readability */
+			border-radius: 8px; /* Rounded corners */
+			padding: 10px; /* More padding for comfort */
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+			position: absolute;
+			z-index: 1;
+			bottom: 120%; /* Adjust position */
+			left: 50%;
+			transform: translateX(-50%);
+			opacity: 0;
+			transition: opacity 0.3s ease-in-out; /* Smooth fade-in/out */
+			font-size: 0.9rem; /* Larger font for readability */
+		}
+
+		/* Tooltip Arrow */
+		.tooltip .tooltiptext::after {
+			content: "";
+			position: absolute;
+			top: 100%; /* Bottom of the tooltip */
+			left: 50%;
+			margin-left: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: #333 transparent transparent transparent; /* Arrow pointing down */
+		}
+
+		/* Show Tooltip on Hover */
+		.tooltip:hover .tooltiptext {
+			visibility: visible;
+			opacity: 1;
+		}
+
+		/* Tooltip Content Formatting */
+		.tooltip .tooltiptext p {
+			margin: 0;
+			padding: 0;
+			line-height: 1.4;
+		}
+
+		.tooltip .tooltiptext h3 {
+			margin-top: 0;
+			margin-bottom: 5px;
+			font-size: 1rem;
+			color: #FFD700; /* Optional: gold color for headings */
+		}
+
+		.tooltip .tooltiptext ul {
+			margin: 5px 0 0 15px;
+			padding: 0;
+		}
+
+		.tooltip .tooltiptext ul li {
+			list-style-type: disc;
+			margin-bottom: 5px;
+		}
 
         .chart-container {
             background-color: #e9ecef;
@@ -232,32 +374,59 @@
 		}
 
         #dark-mode-toggle {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            width: 50px;
-            height: 30px;
-            background-color: #ccc;
-            border-radius: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+			position: fixed;
+			top: 15px;
+			right: 15px;
+			width: 60px; /* Adjusted width for icons */
+			height: 30px;
+			background-color: #ccc;
+			border-radius: 15px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 5px; /* Adjust padding to fit within the container */
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			z-index: 1000; /* Ensure it's on top of other elements */
+		}
 
-        #dark-mode-toggle span {
-            width: 25px;
-            height: 25px;
-            background-color: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
+		#dark-mode-toggle .icon {
+			font-size: 1.2rem;
+			transition: opacity 0.3s ease;
+			z-index: 1; /* Ensure icons appear above the slider */
+		}
 
-        #dark-mode-toggle.active span {
-            transform: translateX(25px);
-        }
+		.light-mode-icon {
+			color: #FFD700; /* Sun color */
+		}
+
+		.dark-mode-icon {
+			color: #4C4C4C; /* Moon color */
+			opacity: 0; /* Hidden by default */
+		}
+
+		#dark-mode-toggle.active .light-mode-icon {
+			opacity: 0; /* Hide sun icon in dark mode */
+		}
+
+		#dark-mode-toggle.active .dark-mode-icon {
+			opacity: 1; /* Show moon icon in dark mode */
+		}
+
+		#dark-mode-toggle .slider {
+			width: 25px;
+			height: 25px;
+			background-color: white;
+			border-radius: 50%;
+			position: absolute;
+			left: 5px; /* Start position for the slider */
+			transition: transform 0.3s ease;
+			z-index: 0; /* Behind the icons */
+		}
+
+		#dark-mode-toggle.active .slider {
+			transform: translateX(30px); /* Move to the right */
+		}
 
         .dark-mode {
             background-color: var(--dark-mode-bg-color);
@@ -273,6 +442,19 @@
             background-color: var(--dark-mode-input-bg-color);
             color: var(--dark-mode-text-color);
         }
+		
+		.dark-mode .total-metrics {
+			background-color: var(--dark-mode-input-bg-color);
+			color: var(--dark-mode-text-color);
+		}
+
+		.dark-mode .total-metrics__item label {
+			color: var(--dark-mode-text-color);
+		}
+
+		.dark-mode .total-metrics__item span {
+			color: var(--dark-mode-text-color);
+		}
 
         .dark-mode .result {
             background-color: var(--dark-mode-result-bg-color);
@@ -287,10 +469,44 @@
         .dark-mode .metric-group__value {
             background-color: rgba(255, 255, 255, 0.1);
         }
+		
+		.dark-mode .metric-value-green {
+			background-color: rgba(0, 128, 0, 0.2); /* Darker green background */
+			color: #66FF66; /* Lighter green text */
+		}
+
+		.dark-mode .metric-value-amber {
+			background-color: rgba(255, 165, 0, 0.2); /* Darker amber background */
+			color: #FFD700; /* Gold text */
+		}
+
+		.dark-mode .metric-value-red {
+			background-color: rgba(139, 0, 0, 0.2); /* Darker red background */
+			color: #FF6666; /* Lighter red text */
+		}
 
         .dark-mode .tooltip {
-            color: var(--primary-color);
-        }
+			color: var(--primary-color); /* Keeps the tooltip icon in primary color */
+		}
+
+		.dark-mode .tooltip .tooltiptext {
+			background-color: var(--dark-mode-input-bg-color); /* Matches the dark mode input background */
+			color: var(--dark-mode-text-color); /* Ensures text is visible in dark mode */
+			border: 1px solid #888; /* Adds a subtle border to the tooltip */
+		}
+
+		.dark-mode .tooltip:hover .tooltiptext {
+			background-color: var(--dark-mode-result-bg-color); /* Slightly different background on hover for contrast */
+			opacity: 1; /* Ensures the tooltip becomes visible on hover */
+		}
+
+		.dark-mode .tooltip .tooltiptext p {
+			margin: 0;
+			padding: 0;
+			font-size: 0.9rem;
+			line-height: 1.2;
+			color: var(--dark-mode-text-color); /* Matches the dark mode text color */
+		}
 
         .dark-mode .input-section__item label {
             color: var(--dark-mode-text-color);
@@ -370,88 +586,170 @@
     </style>
 </head>
 <body>
-    <div id="dark-mode-toggle" onclick="toggleDarkMode()">
-        <span></span>
-    </div>
+    <div id="dark-mode-toggle">
+			<span class="icon light-mode-icon">🌞</span>
+			<span class="icon dark-mode-icon">🌙</span>
+	</div>
     <main>
         <h1>Data Science Statistical Metrics Analyser</h1>
 
         <section class="input-section">
-            <div class="input-section__item">
-                <label for="tp">True Positives (TP):</label>
-                <input type="range" id="tp-range" min="0" max="100" value="10" oninput="syncInput('tp-range', 'tp'); calculateMetrics();">
-                <input type="number" id="tp" value="10" min="0" oninput="syncRange('tp', 'tp-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tp-label">
-            </div>
+			<div class="input-container">
+				<div class="input-section__item">
+					<label for="tp">True Positives (TP):</label>
+					<input type="range" id="tp-range" min="0" max="100" value="10" oninput="syncInput('tp-range', 'tp'); calculateMetrics();">
+					<input type="number" id="tp" value="10" min="0" oninput="syncRange('tp', 'tp-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tp-label">
+				</div>
 
-            <div class="input-section__item">
-                <label for="tn">True Negatives (TN):</label>
-                <input type="range" id="tn-range" min="0" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
-                <input type="number" id="tn" value="10" min="0" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tn-label">
-            </div>
+				<div class="input-section__item">
+					<label for="fp">False Positives (FP):</label>
+					<input type="range" id="fp-range" min="0" max="100" value="5" oninput="syncInput('fp-range', 'fp'); calculateMetrics();">
+					<input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="fp-label">
+				</div>
+			</div>
 
-            <div class="input-section__item">
-                <label for="fp">False Positives (FP):</label>
-                <input type="range" id="fp-range" min="0" max="100" value="5" oninput="syncInput('fp-range', 'fp'); calculateMetrics();">
-                <input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="fp-label">
-            </div>
+			<div class="input-container">
+				<div class="input-section__item">
+					<label for="tn">True Negatives (TN):</label>
+					<input type="range" id="tn-range" min="0" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
+					<input type="number" id="tn" value="10" min="0" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tn-label">
+				</div>
 
-            <div class="input-section__item">
-                <label for="fn">False Negatives (FN):</label>
-                <input type="range" id="fn-range" min="0" max="100" value="5" oninput="syncInput('fn-range', 'fn'); calculateMetrics();">
-                <input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="fn-label">
-            </div>
-        </section>
+				<div class="input-section__item">
+					<label for="fn">False Negatives (FN):</label>
+					<input type="range" id="fn-range" min="0" max="100" value="5" oninput="syncInput('fn-range', 'fn'); calculateMetrics();">
+					<input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="fn-label">
+				</div>
+			</div>
+		</section>
+
+		<!-- New Section for Total Metrics -->
+		<section class="total-metrics">
+			<div class="total-metrics__item">
+				<label>Total Positives:</label>
+				<span id="totalPositives">15</span>
+			</div>
+			<div class="total-metrics__item">
+				<label>Total Negatives:</label>
+				<span id="totalNegatives">15</span>
+			</div>
+			<div class="total-metrics__item">
+				<label>Total Samples:</label>
+				<span id="totalSamples">30</span>
+			</div>
+			<div class="total-metrics__item balance-container">
+				<label>Balance of Samples</label>
+				<div class="balance-bar">
+					<div class="balance-marker" id="balanceMarker"></div>
+					<div class="ideal-marker" id="idealMarker"></div> <!-- Ideal marker added here -->
+				</div>
+			</div>
+		</section>
 
         <section class="result" id="result" aria-live="polite">
-            <div class="metric-group">
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>F1 Score</strong>
-                        <span class="tooltip">?<span class="tooltiptext">Harmonic mean of Precision and Recall. Formula: 2 * (Precision * Recall) / (Precision + Recall).</span></span>
-                    </div>
-                    <div class="metric-group__value" id="f1-result">0.67</div>
-                </div>
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Accuracy</strong>
-                        <span class="tooltip">?<span class="tooltiptext">Overall correctness of predictions. Formula: (TP + TN) / (TP + TN + FP + FN).</span></span>
-                    </div>
-                    <div class="metric-group__value" id="accuracy-result">0.67</div>
-                </div>
-            </div>
-            <div class="metric-group">
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Precision</strong>
-                        <span class="tooltip">?<span class="tooltiptext">Reliability of positive predictions. Formula: TP / (TP + FP).</span></span>
-                    </div>
-                    <div class="metric-group__value" id="precision-result">0.67</div>
-                </div>
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>NPV</strong>
-                        <span class="tooltip">?<span class="tooltiptext">Reliability of negative predictions. Formula: TN / (TN + FN).</span></span>
-                    </div>
-                    <div class="metric-group__value" id="npv-result">0.67</div>
-                </div>
-            </div>
-            <div class="metric-group">
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Recall</strong>
-                        <span class="tooltip">?<span class="tooltiptext">Ability to find all positive instances. Formula: TP / (TP + FN).</span></span>
-                    </div>
-                    <div class="metric-group__value" id="recall-result">0.67</div>
-                </div>
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Specificity</strong>
-                        <span class="tooltip">?<span class="tooltiptext">Ability to find all negative instances. Formula: TN / (TN + FP).</span></span>
-                    </div>
-                    <div class="metric-group__value" id="specificity-result">0.67</div>
-                </div>
-            </div>
-        </section>
+			<div class="metric-group">
+				<div class="metric-group__item">
+					<div class="metric-group__label">
+						<strong>F1 Score</strong>
+						<span class="tooltip">
+							<span class="tooltiptext">
+								<h3>F1 Score</h3>
+								<p>The F1 Score is the harmonic mean of Precision and Recall.</p>
+								<ul>
+									<li>Formula: 2 * (Precision * Recall) / (Precision + Recall)</li>
+									<li>Balanced score between precision and recall.</li>
+								</ul>
+							</span>
+						</span>
+					</div>
+					<div class="metric-group__value" id="f1-result">0.67</div>
+				</div>
+				<div class="metric-group__item">
+					<div class="metric-group__label">
+						<strong>Accuracy</strong>
+						<span class="tooltip">
+							<span class="tooltiptext">
+								<h3>Accuracy</h3>
+								<p>Overall correctness of predictions.</p>
+								<ul>
+									<li>Formula: (TP + TN) / (TP + TN + FP + FN)</li>
+									<li>High accuracy indicates a good model.</li>
+								</ul>
+							</span>
+						</span>
+					</div>
+					<div class="metric-group__value" id="accuracy-result">0.67</div>
+				</div>
+			</div>
+			<div class="metric-group">
+				<div class="metric-group__item">
+					<div class="metric-group__label">
+						<strong>Precision</strong>
+						<span class="tooltip">
+							<span class="tooltiptext">
+								<h3>Precision</h3>
+								<p>Reliability of positive predictions.</p>
+								<ul>
+									<li>Formula: TP / (TP + FP)</li>
+									<li>High precision indicates few false positives.</li>
+								</ul>
+							</span>
+						</span>
+					</div>
+					<div class="metric-group__value" id="precision-result">0.67</div>
+				</div>
+				<div class="metric-group__item">
+					<div class="metric-group__label">
+						<strong>NPV</strong>
+						<span class="tooltip">
+							<span class="tooltiptext">
+								<h3>Negative Predictive Value (NPV)</h3>
+								<p>Reliability of negative predictions.</p>
+								<ul>
+									<li>Formula: TN / (TN + FN)</li>
+									<li>High NPV indicates few false negatives.</li>
+								</ul>
+							</span>
+						</span>
+					</div>
+					<div class="metric-group__value" id="npv-result">0.67</div>
+				</div>
+			</div>
+			<div class="metric-group">
+				<div class="metric-group__item">
+					<div class="metric-group__label">
+						<strong>Recall</strong>
+						<span class="tooltip">
+							<span class="tooltiptext">
+								<h3>Recall</h3>
+								<p>Ability to find all positive instances.</p>
+								<ul>
+									<li>Formula: TP / (TP + FN)</li>
+									<li>High recall indicates few false negatives.</li>
+								</ul>
+							</span>
+						</span>
+					</div>
+					<div class="metric-group__value" id="recall-result">0.67</div>
+				</div>
+				<div class="metric-group__item">
+					<div class="metric-group__label">
+						<strong>Specificity</strong>
+						<span class="tooltip">
+							<span class="tooltiptext">
+								<h3>Specificity</h3>
+								<p>Ability to find all negative instances.</p>
+								<ul>
+									<li>Formula: TN / (TN + FP)</li>
+									<li>High specificity indicates few false positives.</li>
+								</ul>
+							</span>
+						</span>
+					</div>
+					<div class="metric-group__value" id="specificity-result">0.67</div>
+				</div>
+			</div>
+		</section>
 		
 		<!-- Insights Panel -->
 		<section class="insights-panel" id="insightsPanel">
@@ -488,29 +786,59 @@
         let myChart;
 
         function calculateMetrics() {
-            const tp = parseFloat(document.getElementById('tp').value);
-            const tn = parseFloat(document.getElementById('tn').value);
-            const fp = parseFloat(document.getElementById('fp').value);
-            const fn = parseFloat(document.getElementById('fn').value);
+			const tp = parseFloat(document.getElementById('tp').value);
+			const tn = parseFloat(document.getElementById('tn').value);
+			const fp = parseFloat(document.getElementById('fp').value);
+			const fn = parseFloat(document.getElementById('fn').value);
 
-            const accuracy = (tp + tn) / (tp + tn + fp + fn);
-            const precision = tp / (tp + fp);
-            const recall = tp / (tp + fn);
-            const specificity = tn / (tn + fp);
-            const npv = tn / (tn + fn);
-            const f1_score = 2 * (precision * recall) / (precision + recall);
+			// Calculate metrics
+			const accuracy = (tp + tn) / (tp + tn + fp + fn);
+			const precision = tp / (tp + fp);
+			const recall = tp / (tp + fn);
+			const specificity = tn / (tn + fp);
+			const npv = tn / (tn + fn);
+			const f1_score = 2 * (precision * recall) / (precision + recall);
 
-            updateMetricResults({
-                accuracy: accuracy.toFixed(2),
-                precision: precision.toFixed(2),
-                recall: recall.toFixed(2),
-                specificity: specificity.toFixed(2),
-                npv: npv.toFixed(2),
-                f1_score: f1_score.toFixed(2)
-            });
+			// Update metric results
+			updateMetricResults({
+				accuracy: accuracy.toFixed(2),
+				precision: precision.toFixed(2),
+				recall: recall.toFixed(2),
+				specificity: specificity.toFixed(2),
+				npv: npv.toFixed(2),
+				f1_score: f1_score.toFixed(2)
+			});
 
-            updateChart([accuracy, precision, recall, specificity, npv, f1_score]);
-        }
+			// Calculate totals
+			const totalPositives = tp + fn;
+			const totalNegatives = tn + fp;
+			const totalSamples = totalPositives + totalNegatives;
+			
+			// Call to update the balance marker
+			updateBalanceMarker();
+
+			// Update the total values in the HTML
+			document.getElementById('totalPositives').innerText = totalPositives;
+			document.getElementById('totalNegatives').innerText = totalNegatives;
+			document.getElementById('totalSamples').innerText = totalSamples;
+
+			// Update chart
+			updateChart([accuracy, precision, recall, specificity, npv, f1_score]);
+		}
+		
+		function updateBalanceMarker() {
+			const tp = parseFloat(document.getElementById('tp').value);
+			const fn = parseFloat(document.getElementById('fn').value);
+			const tn = parseFloat(document.getElementById('tn').value);
+			const fp = parseFloat(document.getElementById('fp').value);
+
+			const totalSamples = tp + fn + tn + fp;
+			const positiveRatio = (tp + fn) / totalSamples;
+			const markerPosition = positiveRatio * 100; // Convert to percentage
+
+			const marker = document.querySelector('.balance-marker');
+			marker.style.left = `${markerPosition}%`; // Move the marker
+		}
 		
 		function generateOverallSummary(metrics) {
 			let summary = '';
@@ -597,12 +925,32 @@
 		}
 		
 		function updateMetricResults(metrics) {
-			document.getElementById('f1-result').innerText = metrics.f1_score;
-			document.getElementById('accuracy-result').innerText = metrics.accuracy;
-			document.getElementById('precision-result').innerText = metrics.precision;
-			document.getElementById('npv-result').innerText = metrics.npv;
-			document.getElementById('recall-result').innerText = metrics.recall;
-			document.getElementById('specificity-result').innerText = metrics.specificity;
+			const metricElements = {
+				f1_score: document.getElementById('f1-result'),
+				accuracy: document.getElementById('accuracy-result'),
+				precision: document.getElementById('precision-result'),
+				npv: document.getElementById('npv-result'),
+				recall: document.getElementById('recall-result'),
+				specificity: document.getElementById('specificity-result')
+			};
+
+			for (const metric in metrics) {
+				const value = parseFloat(metrics[metric]);
+				let className = '';
+
+				// Determine the class to apply based on the metric value
+				if (value >= 0.9) {
+					className = 'metric-value-green';
+				} else if (value >= 0.75 && value < 0.9) {
+					className = 'metric-value-amber';
+				} else {
+					className = 'metric-value-red';
+				}
+
+				// Update the text and apply the corresponding class
+				metricElements[metric].innerText = metrics[metric];
+				metricElements[metric].className = className;
+			}
 
 			// Generate Insights
 			const overallSummary = generateOverallSummary(metrics);
@@ -704,24 +1052,42 @@
 		}
 
         function initializeDarkModeToggle() {
-            const toggleSwitch = document.getElementById('dark-mode-toggle').querySelector('span');
-            toggleSwitch.addEventListener('click', toggleDarkMode);
-        }
+			const toggleContainer = document.getElementById('dark-mode-toggle');
+			toggleContainer.addEventListener('click', toggleDarkMode);
 
-        function toggleDarkMode() {
-            const body = document.body;
-            const toggleSwitch = document.getElementById('dark-mode-toggle').querySelector('span');
-            const isDarkMode = body.classList.toggle('dark-mode');
+			// Set initial state based on dark mode
+			if (document.body.classList.contains('dark-mode')) {
+				toggleContainer.classList.add('active');
+			} else {
+				toggleContainer.classList.remove('active');
+			}
+		}
+		
+		function toggleDarkMode() {
+			const body = document.body;
+			const toggleContainer = document.getElementById('dark-mode-toggle');
+			const isDarkMode = body.classList.toggle('dark-mode');
 
-            toggleSwitch.style.transform = isDarkMode ? 'translateX(25px)' : 'translateX(0)';
+			toggleContainer.classList.toggle('active', isDarkMode);
 
-            calculateMetrics(); // Recalculate metrics to update chart colors
+			calculateMetrics(); // Recalculate metrics to update chart colors
 
-            const tooltips = document.querySelectorAll('.tooltip .tooltiptext');
-            tooltips.forEach(tooltip => {
-                tooltip.style.backgroundColor = isDarkMode ? '#555' : '#333';
-            });
-        }
+			const tooltips = document.querySelectorAll('.tooltip .tooltiptext');
+			tooltips.forEach(tooltip => {
+				if (isDarkMode) {
+					tooltip.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-mode-input-bg-color').trim();
+					tooltip.style.color = getComputedStyle(document.documentElement).getPropertyValue('--dark-mode-text-color').trim();
+				} else {
+					tooltip.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--tooltip-bg-color').trim();
+					tooltip.style.color = '#fff'; // Default tooltip text color for light mode
+				}
+			});
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			initializeDarkModeToggle();
+			calculateMetrics();
+		});
 
         function updateChartColors(color) {
             Chart.defaults.color = color;
