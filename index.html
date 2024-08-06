@@ -118,6 +118,50 @@
 			border-radius: 50%;
 		}
 		
+		.confusion-matrix {
+			background-color: var(--input-bg-color); /* Use the same background color as the input section */
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			margin-bottom: 20px; /* Ensure consistent spacing */
+			animation: fadeInUp 1s ease-out;
+		}
+
+		.confusion-matrix__table {
+			width: 100%;
+			border-collapse: collapse;
+			text-align: center;
+		}
+
+		.confusion-matrix__table th, .confusion-matrix__table td {
+			border: 1px solid #ced4da; /* Soft grey to match the overall theme */
+			padding: 10px;
+		}
+
+		.confusion-matrix__table th {
+			background-color: var(--input-bg-color); /* Consistent background for headers */
+			color: var(--text-color); /* Consistent text color */
+			font-weight: 500;
+		}
+
+		.confusion-matrix__table td {
+			background-color: var(--container-bg-color); /* Match with container background */
+			font-weight: bold;
+			color: var(--text-color);
+		}
+
+		.confusion-matrix__table td#tp-cell,
+		.confusion-matrix__table td#tn-cell {
+			background-color: rgba(75, 192, 192, 0.2); /* Softer green for TP and TN */
+			color: #3c763d;
+		}
+
+		.confusion-matrix__table td#fp-cell,
+		.confusion-matrix__table td#fn-cell {
+			background-color: rgba(255, 99, 132, 0.2); /* Softer red for FP and FN */
+			color: #a94442;
+		}
+		
 		/* Adjusted class for total metrics display */
 		.total-metrics {
 			display: grid;
@@ -442,6 +486,35 @@
             background-color: var(--dark-mode-input-bg-color);
             color: var(--dark-mode-text-color);
         }
+
+		.dark-mode .confusion-matrix__table th,
+		.dark-mode .confusion-matrix__table td {
+			border-color: #888; /* Lighter border color for dark mode */
+		}
+
+		.dark-mode .confusion-matrix__table td#tp-cell,
+		.dark-mode .confusion-matrix__table td#tn-cell {
+			background-color: rgba(75, 192, 192, 0.2); /* Softer green for TP and TN cells */
+			color: #66FF66; /* Light green text for dark mode */
+		}
+
+		.dark-mode .confusion-matrix__table td#fp-cell,
+		.dark-mode .confusion-matrix__table td#fn-cell {
+			background-color: rgba(255, 99, 132, 0.2); /* Softer red for FP and FN cells */
+			color: #FF6666; /* Light red text for dark mode */
+		}
+
+		.dark-mode .confusion-matrix__table th {
+			background-color: var(--dark-mode-container-bg-color); /* Match dark mode container background */
+			color: #fff; /* Ensure text is white for contrast */
+		}
+		
+		.dark-mode .confusion-matrix {
+			background-color: var(--dark-mode-input-bg-color); /* Match dark mode background */
+			border-radius: 8px;
+			padding: 20px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
 		
 		.dark-mode .total-metrics {
 			background-color: var(--dark-mode-input-bg-color);
@@ -600,30 +673,53 @@
 					<input type="range" id="tp-range" min="0" max="100" value="10" oninput="syncInput('tp-range', 'tp'); calculateMetrics();">
 					<input type="number" id="tp" value="10" min="0" oninput="syncRange('tp', 'tp-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tp-label">
 				</div>
-
+				
 				<div class="input-section__item">
 					<label for="fp">False Positives (FP):</label>
 					<input type="range" id="fp-range" min="0" max="100" value="5" oninput="syncInput('fp-range', 'fp'); calculateMetrics();">
 					<input type="number" id="fp" value="5" min="0" oninput="syncRange('fp', 'fp-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="fp-label">
-				</div>
+				</div>				
 			</div>
 
 			<div class="input-container">
-				<div class="input-section__item">
-					<label for="tn">True Negatives (TN):</label>
-					<input type="range" id="tn-range" min="0" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
-					<input type="number" id="tn" value="10" min="0" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tn-label">
-				</div>
-
 				<div class="input-section__item">
 					<label for="fn">False Negatives (FN):</label>
 					<input type="range" id="fn-range" min="0" max="100" value="5" oninput="syncInput('fn-range', 'fn'); calculateMetrics();">
 					<input type="number" id="fn" value="5" min="0" oninput="syncRange('fn', 'fn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="fn-label">
 				</div>
+				
+				<div class="input-section__item">
+					<label for="tn">True Negatives (TN):</label>
+					<input type="range" id="tn-range" min="0" max="100" value="10" oninput="syncInput('tn-range', 'tn'); calculateMetrics();">
+					<input type="number" id="tn" value="10" min="0" oninput="syncRange('tn', 'tn-range'); calculateMetrics();" onkeydown="return preventInvalidInput(event);" aria-labelledby="tn-label">
+				</div>
 			</div>
 		</section>
-
-		<!-- New Section for Total Metrics -->
+		
+		<section class="confusion-matrix">
+			<table id="confusionMatrix" class="confusion-matrix__table">
+				<thead>
+					<tr>
+						<th>Confusion Matrix</th>
+						<th>Predicted Positive</th>
+						<th>Predicted Negative</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>Actual Positive</th>
+						<td id="tp-cell">TP</td>
+						<td id="fn-cell">FN</td>
+					</tr>
+					<tr>
+						<th>Actual Negative</th>
+						<td id="fp-cell">FP</td>
+						<td id="tn-cell">TN</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+		
 		<section class="total-metrics">
 			<div class="total-metrics__item">
 				<label>Total Positives:</label>
@@ -641,7 +737,7 @@
 				<label>Balance of Samples</label>
 				<div class="balance-bar">
 					<div class="balance-marker" id="balanceMarker"></div>
-					<div class="ideal-marker" id="idealMarker"></div> <!-- Ideal marker added here -->
+					<div class="ideal-marker" id="idealMarker"></div>
 				</div>
 			</div>
 		</section>
@@ -816,6 +912,9 @@
 			
 			// Call to update the balance marker
 			updateBalanceMarker();
+			
+			// Update the confusion matrix
+			updateConfusionMatrix(tp, tn, fp, fn);
 
 			// Update the total values in the HTML
 			document.getElementById('totalPositives').innerText = totalPositives;
@@ -838,6 +937,13 @@
 
 			const marker = document.querySelector('.balance-marker');
 			marker.style.left = `${markerPosition}%`; // Move the marker
+		}
+		
+		function updateConfusionMatrix(tp, tn, fp, fn) {
+			document.getElementById('tp-cell').innerText = tp;
+			document.getElementById('tn-cell').innerText = tn;
+			document.getElementById('fp-cell').innerText = fp;
+			document.getElementById('fn-cell').innerText = fn;
 		}
 		
 		function generateOverallSummary(metrics) {
