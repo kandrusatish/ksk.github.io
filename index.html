@@ -47,7 +47,7 @@
 			padding: 20px;
 			border-radius: 8px;
 			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-			max-width: 800px;
+			max-width: 900px;
 			width: 100%;
 			margin: 80px auto 40px auto;
 		}
@@ -67,6 +67,14 @@
 			padding: 20px 0;
 			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 			z-index: 1000;
+		}
+		
+		h3 {
+			font-size: 1.3rem;
+			color: var(--primary-color);
+			margin-bottom: 15px;
+			text-align: left;
+			animation: fadeInDown 1s ease-out;
 		}
 
 		/* Responsive Media Queries */
@@ -135,7 +143,7 @@
 
 		/* Input Styles */
 		input[type="number"] {
-			width: 60px;
+			width: 80px;
 			padding: 8px;
 			border-radius: 5px;
 			border: 1px solid #ced4da;
@@ -273,10 +281,23 @@
 			left: 50%;
 			transform: translateX(-50%);
 		}
+		
+		.metrics-and-chart {
+			display: flex;
+			gap: 20px; /* Increased space between metrics and chart for better separation */
+			flex-wrap: wrap; /* Allows elements to wrap on smaller screens */
+			justify-content: space-between;
+		}
+
+		.metrics-and-chart > section {
+			flex: 1;
+			min-width: 45%; /* Ensure both sections have a balanced width */
+			max-width: 45%; /* Prevent sections from becoming too wide */
+		}
 
 		/* Result Section Styles */
 		.result {
-			margin-top: 20px;
+			margin-top: 10px;
 			padding: 15px;
 			background-color: var(--input-bg-color);
 			border-radius: 8px;
@@ -397,17 +418,25 @@
 
 		/* Chart Container Styles */
 		.chart-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			background-color: #e9ecef;
 			padding: 20px;
 			border-radius: 8px;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			margin-top: 20px;
+			margin-top: 10px;
 		}
 
 		.chart {
 			height: 100px;
 			width: 100%;
 			animation: fadeInUp 1s ease-out;
+		}
+		
+		.chart-container canvas {
+			width: 100%;
+			height: auto;
 		}
 
 		/* Insights Panel Styling */
@@ -496,6 +525,11 @@
 		#dark-mode-toggle.active .slider {
 			transform: translateX(30px);
 		}
+		
+		#dark-mode-toggle:focus, .tooltip:focus {
+			outline: 2px solid var(--primary-color);
+			outline-offset: 4px;
+		}
 
 		/* Dark Mode Styles */
 		.dark-mode {
@@ -509,6 +543,12 @@
 		}
 
 		.dark-mode h1 {
+			background-color: var(--dark-mode-container-bg-color);
+			color: var(--dark-mode-text-color);
+			transition: background-color 0.3s, color 0.3s;
+		}
+		
+		.dark-mode h3 {
 			background-color: var(--dark-mode-container-bg-color);
 			color: var(--dark-mode-text-color);
 			transition: background-color 0.3s, color 0.3s;
@@ -556,7 +596,7 @@
 		}
 
 		.dark-mode .total-metrics__item span {
-			color: var (--dark-mode-text-color);
+			color: var(--dark-mode-text-color);
 		}
 
 		.dark-mode .result {
@@ -691,7 +731,7 @@
     </div>
     <main>
         <h1>Data Science Statistical Metrics Analyser</h1>
-
+		<h3>Input Parameters</h3>
         <section class="input-section">
             <div class="input-container">
                 <div class="input-section__item">
@@ -768,127 +808,131 @@
             </div>
         </section>
 
-        <section class="result" id="result" aria-live="polite">
-            <div class="metric-group">
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>F1 Score</strong>
-                        <span class="tooltip">
-                            <i class="fas fa-info-circle tooltip-icon"></i>
-                            <span class="tooltiptext">
-                                <h3>F1 Score</h3>
-                                <p>The F1 Score is the harmonic mean of Precision and Recall.</p>
-                                <ul>
-                                    <li>Formula: 2 * (Precision * Recall) / (Precision + Recall)</li>
-                                    <li>Balanced score between precision and recall.</li>
-                                </ul>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="metric-group__value" id="f1-result">0.67</div>
-                </div>
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Accuracy</strong>
-                        <span class="tooltip">
-                            <i class="fas fa-info-circle tooltip-icon"></i>
-                            <span class="tooltiptext">
-                                <h3>Accuracy</h3>
-                                <p>Overall correctness of predictions.</p>
-                                <ul>
-                                    <li>Formula: (TP + TN) / (TP + TN + FP + FN)</li>
-                                    <li>High accuracy indicates a good model.</li>
-                                </ul>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="metric-group__value" id="accuracy-result">0.67</div>
-                </div>
-            </div>
-            <div class="metric-group">
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Precision</strong>
-                        <span class="tooltip">
-                            <i class="fas fa-info-circle tooltip-icon"></i>
-                            <span class="tooltiptext">
-                                <h3>Precision</h3>
-                                <p>Reliability of positive predictions.</p>
-                                <ul>
-                                    <li>Formula: TP / (TP + FP)</li>
-                                    <li>High precision indicates few false positives.</li>
-                                </ul>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="metric-group__value" id="precision-result">0.67</div>
-                </div>
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>NPV</strong>
-                        <span class="tooltip">
-                            <i class="fas fa-info-circle tooltip-icon"></i>
-                            <span class="tooltiptext">
-                                <h3>Negative Predictive Value (NPV)</h3>
-                                <p>Reliability of negative predictions.</p>
-                                <ul>
-                                    <li>Formula: TN / (TN + FN)</li>
-                                    <li>High NPV indicates few false negatives.</li>
-                                </ul>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="metric-group__value" id="npv-result">0.67</div>
-                </div>
-            </div>
-            <div class="metric-group">
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Recall</strong>
-                        <span class="tooltip">
-                            <i class="fas fa-info-circle tooltip-icon"></i>
-                            <span class="tooltiptext">
-                                <h3>Recall</h3>
-                                <p>Ability to find all positive instances.</p>
-                                <ul>
-                                    <li>Formula: TP / (TP + FN)</li>
-                                    <li>High recall indicates few false negatives.</li>
-                                </ul>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="metric-group__value" id="recall-result">0.67</div>
-                </div>
-                <div class="metric-group__item">
-                    <div class="metric-group__label">
-                        <strong>Specificity</strong>
-                        <span class="tooltip">
-                            <i class="fas fa-info-circle tooltip-icon"></i>
-                            <span class="tooltiptext">
-                                <h3>Specificity</h3>
-                                <p>Ability to find all negative instances.</p>
-                                <ul>
-                                    <li>Formula: TN / (TN + FP)</li>
-                                    <li>High specificity indicates few false positives.</li>
-                                </ul>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="metric-group__value" id="specificity-result">0.67</div>
-                </div>
-            </div>
+		<h3>Metrics</h3>
+		<div class="metrics-and-chart">
+			<section class="result" id="result" aria-live="polite">
+				<div class="metric-group">
+					<div class="metric-group__item">
+						<div class="metric-group__label">
+							<strong>F1</strong>
+							<span class="tooltip">
+								<i class="fas fa-info-circle tooltip-icon"></i>
+								<span class="tooltiptext">
+									<h3>F1 Score</h3>
+									<p>The F1 Score is the harmonic mean of Precision and Recall.</p>
+									<ul>
+										<li>Formula: 2 * (Precision * Recall) / (Precision + Recall)</li>
+										<li>Balanced score between precision and recall.</li>
+									</ul>
+								</span>
+							</span>
+						</div>
+						<div class="metric-group__value" id="f1-result">0.67</div>
+					</div>
+					<div class="metric-group__item">
+						<div class="metric-group__label">
+							<strong>Accuracy</strong>
+							<span class="tooltip">
+								<i class="fas fa-info-circle tooltip-icon"></i>
+								<span class="tooltiptext">
+									<h3>Accuracy</h3>
+									<p>Overall correctness of predictions.</p>
+									<ul>
+										<li>Formula: (TP + TN) / (TP + TN + FP + FN)</li>
+										<li>High accuracy indicates a good model.</li>
+									</ul>
+								</span>
+							</span>
+						</div>
+						<div class="metric-group__value" id="accuracy-result">0.67</div>
+					</div>
+				</div>
+				<div class="metric-group">
+					<div class="metric-group__item">
+						<div class="metric-group__label">
+							<strong>Precision</strong>
+							<span class="tooltip">
+								<i class="fas fa-info-circle tooltip-icon"></i>
+								<span class="tooltiptext">
+									<h3>Precision</h3>
+									<p>Reliability of positive predictions.</p>
+									<ul>
+										<li>Formula: TP / (TP + FP)</li>
+										<li>High precision indicates few false positives.</li>
+									</ul>
+								</span>
+							</span>
+						</div>
+						<div class="metric-group__value" id="precision-result">0.67</div>
+					</div>
+					<div class="metric-group__item">
+						<div class="metric-group__label">
+							<strong>NPV</strong>
+							<span class="tooltip">
+								<i class="fas fa-info-circle tooltip-icon"></i>
+								<span class="tooltiptext">
+									<h3>Negative Predictive Value (NPV)</h3>
+									<p>Reliability of negative predictions.</p>
+									<ul>
+										<li>Formula: TN / (TN + FN)</li>
+										<li>High NPV indicates few false negatives.</li>
+									</ul>
+								</span>
+							</span>
+						</div>
+						<div class="metric-group__value" id="npv-result">0.67</div>
+					</div>
+				</div>
+				<div class="metric-group">
+					<div class="metric-group__item">
+						<div class="metric-group__label">
+							<strong>Recall</strong>
+							<span class="tooltip">
+								<i class="fas fa-info-circle tooltip-icon"></i>
+								<span class="tooltiptext">
+									<h3>Recall</h3>
+									<p>Ability to find all positive instances.</p>
+									<ul>
+										<li>Formula: TP / (TP + FN)</li>
+										<li>High recall indicates few false negatives.</li>
+									</ul>
+								</span>
+							</span>
+						</div>
+						<div class="metric-group__value" id="recall-result">0.67</div>
+					</div>
+					<div class="metric-group__item">
+						<div class="metric-group__label">
+							<strong>Specificity</strong>
+							<span class="tooltip">
+								<i class="fas fa-info-circle tooltip-icon"></i>
+								<span class="tooltiptext">
+									<h3>Specificity</h3>
+									<p>Ability to find all negative instances.</p>
+									<ul>
+										<li>Formula: TN / (TN + FP)</li>
+										<li>High specificity indicates few false positives.</li>
+									</ul>
+								</span>
+							</span>
+						</div>
+						<div class="metric-group__value" id="specificity-result">0.67</div>
+					</div>
+				</div>
+			</section>
+			
+		<section class="chart-container">
+            <canvas id="metricsChart" class="chart"></canvas>
         </section>
+			
+		</div>
 
-        <!-- Insights Panel -->
+        <h3>Insights</h3>
         <section class="insights-panel" id="insightsPanel">
-            <h2>Insights</h2>
             <div id="overallSummary"></div>
             <div id="recommendations"></div>
         </section>
 
-        <section class="chart-container">
-            <canvas id="metricsChart" class="chart"></canvas>
-        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1096,7 +1140,7 @@
 		}
 
         /* Update the metrics chart with new data */
-        function updateChart(data) {
+		function updateChart(data) {
             const isDarkMode = document.body.classList.contains('dark-mode');
             const textColor = getComputedStyle(document.documentElement).getPropertyValue(isDarkMode ? '--dark-mode-text-color' : '--text-color').trim();
 
@@ -1144,15 +1188,6 @@
                                     size: 14
                                 }
                             },
-                            title: {
-                                display: true,
-                                text: 'Metrics',
-                                color: textColor,
-                                font: {
-                                    family: "'Roboto', sans-serif",
-                                    size: 16
-                                }
-                            }
                         },
                         y: {
                             grid: {
@@ -1166,15 +1201,6 @@
                                     size: 14
                                 }
                             },
-                            title: {
-                                display: true,
-                                text: 'Values',
-                                color: textColor,
-                                font: {
-                                    family: "'Roboto', sans-serif",
-                                    size: 16
-                                }
-                            }
                         }
                     },
                     plugins: {
@@ -1187,7 +1213,7 @@
         }
 
         /* Initialize dark mode toggle functionality */
-        function initializeDarkModeToggle() {
+		function initializeDarkModeToggle() {
             const toggleContainer = document.getElementById('dark-mode-toggle');
             toggleContainer.addEventListener('click', toggleDarkMode);
 
@@ -1199,7 +1225,7 @@
         }
 
         /* Toggle between light and dark modes */
-        function toggleDarkMode() {
+		function toggleDarkMode() {
             const body = document.body;
             const toggleContainer = document.getElementById('dark-mode-toggle');
             const isDarkMode = body.classList.toggle('dark-mode');
