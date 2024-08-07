@@ -171,13 +171,24 @@
 			border-radius: 50%;
 		}
 
-		/* Confusion Matrix Styles */
+		.confusion-matrix-totals {
+			display: flex;
+			justify-content: space-between;
+			gap: 20px; /* Space between the two sections */
+			margin-bottom: 20px; /* Adjust margin as needed */
+		}
+
+		.confusion-matrix-totals > section {
+			flex: 1;
+			min-width: 44%; /* Ensure both sections have a balanced width */
+			max-width: 44%; /* Prevent sections from becoming too wide */
+		}
+		
 		.confusion-matrix {
 			background-color: var(--input-bg-color);
 			padding: 20px;
 			border-radius: 8px;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			margin-bottom: 20px;
 			animation: fadeInUp 1s ease-out;
 		}
 
@@ -218,18 +229,22 @@
 			color: #a94442;
 		}
 
-		/* Total Metrics Display */
+		/* Total Metrics Display */	
 		.total-metrics {
-			display: grid;
-			grid-template-columns: repeat(4, 1fr);
-			gap: 20px;
-			align-items: center;
-			padding: 15px;
 			background-color: var(--input-bg-color);
+			padding: 20px;
 			border-radius: 8px;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			margin-top: 20px;
 			animation: fadeInUp 1s ease-out;
+		}
+		
+		.total-pos-neg, 
+		.toal-samples-balance {
+			display: flex;
+			justify-content: space-between;
+			gap: 20px; /* Space between items */
+			margin-top: 20px;
+			margin-bottom: 20px;
 		}
 
 		.total-metrics__item {
@@ -720,8 +735,8 @@
 			100% {
 				opacity: 1;
 			}
-		}
     </style>
+		}
 </head>
 <body>
     <div id="dark-mode-toggle">
@@ -761,52 +776,58 @@
                 </div>
             </div>
         </section>
+		
+		<div class="confusion-matrix-totals">
+			<section class="confusion-matrix">
+				<table id="confusionMatrix" class="confusion-matrix__table">
+					<thead>
+						<tr>
+							<th>Confusion Matrix</th>
+							<th>Predicted Positive</th>
+							<th>Predicted Negative</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>Actual Positive</th>
+							<td id="tp-cell">TP</td>
+							<td id="fn-cell">FN</td>
+						</tr>
+						<tr>
+							<th>Actual Negative</th>
+							<td id="fp-cell">FP</td>
+							<td id="tn-cell">TN</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
 
-        <section class="confusion-matrix">
-            <table id="confusionMatrix" class="confusion-matrix__table">
-                <thead>
-                    <tr>
-                        <th>Confusion Matrix</th>
-                        <th>Predicted Positive</th>
-                        <th>Predicted Negative</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>Actual Positive</th>
-                        <td id="tp-cell">TP</td>
-                        <td id="fn-cell">FN</td>
-                    </tr>
-                    <tr>
-                        <th>Actual Negative</th>
-                        <td id="fp-cell">FP</td>
-                        <td id="tn-cell">TN</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
-
-        <section class="total-metrics">
-            <div class="total-metrics__item">
-                <label>Total Positives:</label>
-                <span id="totalPositives">15</span>
-            </div>
-            <div class="total-metrics__item">
-                <label>Total Negatives:</label>
-                <span id="totalNegatives">15</span>
-            </div>
-            <div class="total-metrics__item">
-                <label>Total Samples:</label>
-                <span id="totalSamples">30</span>
-            </div>
-            <div class="total-metrics__item balance-container">
-                <label>Balance of Samples</label>
-                <div class="balance-bar">
-                    <div class="balance-marker" id="balanceMarker"></div>
-                    <div class="ideal-marker" id="idealMarker"></div>
-                </div>
-            </div>
-        </section>
+			<section class="total-metrics">
+				<div class="total-pos-neg">
+					<div class="total-metrics__item">
+						<label>Total Positives</label>
+						<span id="totalPositives">15</span>
+					</div>
+					<div class="total-metrics__item">
+						<label>Total Negatives</label>
+						<span id="totalNegatives">15</span>
+					</div>
+				</div>
+				<div class="toal-samples-balance">
+					<div class="total-metrics__item">
+						<label>Total Samples</label>
+						<span id="totalSamples">30</span>
+					</div>
+					<div class="total-metrics__item balance-container">
+						<label>Samples Distribution</label>
+						<div class="balance-bar">
+							<div class="balance-marker" id="balanceMarker"></div>
+							<div class="ideal-marker" id="idealMarker"></div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
 
 		<h3>Metrics</h3>
 		<div class="metrics-and-chart">
