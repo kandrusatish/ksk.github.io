@@ -999,20 +999,20 @@
             const fp = parseFloat(document.getElementById('fp').value);
             const fn = parseFloat(document.getElementById('fn').value);
 
-            const accuracy = (tp + tn) / (tp + tn + fp + fn);
+			const accuracy = (tp + tn) / (tp + tn + fp + fn);
             const precision = tp / (tp + fp);
-            const recall = tp / (tp + fn);
-            const specificity = tn / (tn + fp);
             const npv = tn / (tn + fn);
-            const f1_score = 2 * (precision * recall) / (precision + recall);
+			const recall = tp / (tp + fn);
+            const specificity = tn / (tn + fp);
+			const f1_score = 2 * (precision * recall) / (precision + recall);
 
             updateMetricResults({
+				f1_score: f1_score.toFixed(2),
                 accuracy: accuracy.toFixed(2),
                 precision: precision.toFixed(2),
+				npv: npv.toFixed(2),
                 recall: recall.toFixed(2),
-                specificity: specificity.toFixed(2),
-                npv: npv.toFixed(2),
-                f1_score: f1_score.toFixed(2)
+                specificity: specificity.toFixed(2)
             });
 
             const totalPositives = tp + fn;
@@ -1026,7 +1026,7 @@
             document.getElementById('totalNegatives').innerText = totalNegatives;
             document.getElementById('totalSamples').innerText = totalSamples;
 
-            updateChart([accuracy, precision, recall, specificity, npv, f1_score]);
+            updateChart([f1_score, accuracy, precision, npv, recall, specificity ]);
         }
 
         /* Update the position of the balance marker based on the data */
@@ -1084,6 +1084,14 @@
 			const moderateIcon = '<i class="fas fa-exclamation-triangle" style="color: #ffc107; margin-right: 8px;"></i>'; // Amber
 			const badIcon = '<i class="fas fa-times-circle" style="color: #dc3545; margin-right: 8px;"></i>'; // Red
 
+			if (metrics.f1_score >= 0.9) {
+				recommendations.push(`${goodIcon} F1 Score is good, balancing precision and recall well.`);
+			} else if (metrics.f1_score >= 0.75) {
+				recommendations.push(`${moderateIcon} F1 Score is moderate. There might be a trade-off between precision and recall.`);
+			} else {
+				recommendations.push(`${badIcon} F1 Score is low. Investigate the balance between precision and recall.`);
+			}
+
 			if (metrics.accuracy >= 0.9) {
 				recommendations.push(`${goodIcon} Accuracy is good. Maintain current methods.`);
 			} else if (metrics.accuracy >= 0.75) {
@@ -1098,6 +1106,14 @@
 				recommendations.push(`${moderateIcon} Precision is moderate. There may be some false positives.`);
 			} else {
 				recommendations.push(`${badIcon} Precision is low. Consider tuning your model to reduce false positives.`);
+			}
+			
+			if (metrics.npv >= 0.9) {
+				recommendations.push(`${goodIcon} NPV is good, indicating reliable negative predictions.`);
+			} else if (metrics.npv >= 0.75) {
+				recommendations.push(`${moderateIcon} NPV is moderate. There may be some inaccuracies in negative predictions.`);
+			} else {
+				recommendations.push(`${badIcon} NPV is low. Consider why negative predictions might be unreliable.`);
 			}
 
 			if (metrics.recall >= 0.9) {
@@ -1114,23 +1130,7 @@
 				recommendations.push(`${moderateIcon} Specificity is moderate. There might be some false negatives.`);
 			} else {
 				recommendations.push(`${badIcon} Specificity is low. Consider investigating the causes of false negatives.`);
-			}
-
-			if (metrics.npv >= 0.9) {
-				recommendations.push(`${goodIcon} NPV is good, indicating reliable negative predictions.`);
-			} else if (metrics.npv >= 0.75) {
-				recommendations.push(`${moderateIcon} NPV is moderate. There may be some inaccuracies in negative predictions.`);
-			} else {
-				recommendations.push(`${badIcon} NPV is low. Consider why negative predictions might be unreliable.`);
-			}
-
-			if (metrics.f1_score >= 0.9) {
-				recommendations.push(`${goodIcon} F1 Score is good, balancing precision and recall well.`);
-			} else if (metrics.f1_score >= 0.75) {
-				recommendations.push(`${moderateIcon} F1 Score is moderate. There might be a trade-off between precision and recall.`);
-			} else {
-				recommendations.push(`${badIcon} F1 Score is low. Investigate the balance between precision and recall.`);
-			}
+			}			
 
 			return recommendations;
 		}
@@ -1197,7 +1197,7 @@
             myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Accuracy', 'Precision', 'Recall', 'Specificity', 'NPV', 'F1 Score'],
+                    labels: ['F1 Score', 'Accuracy', 'Precision', 'NPV', 'Recall', 'Specificity'],
                     datasets: [{
                         label: 'Metrics',
                         data: data,
