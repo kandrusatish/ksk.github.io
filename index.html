@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Add Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <style>
         /* CSS Variables for Theming */
@@ -235,21 +234,25 @@
 			padding: 20px;
 			border-radius: 8px;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			display: flex;
+			justify-content: space-between;
+			gap: 20px;
 			animation: fadeInUp 1s ease-out;
 		}
-		
+
 		.total-pos-neg, 
 		.toal-samples-balance {
 			display: flex;
-			justify-content: space-between;
-			gap: 20px; /* Space between items */
-			margin-top: 20px;
-			margin-bottom: 20px;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			gap: 30px;
+			flex: 1;
 		}
 
 		.total-metrics__item {
 			text-align: center;
-			animation: fadeInUp 1s ease-out;
+			margin-bottom: 10px;
 		}
 
 		.total-metrics__item label {
@@ -257,15 +260,23 @@
 			color: var(--label-color);
 			display: block;
 			margin-bottom: 5px;
+			font-size: 1rem; /* Adjust font size for better readability */
 		}
 
 		.total-metrics__item span {
 			display: block;
-			font-size: 1.2rem;
+			font-size: 1.5rem; /* Increase font size for emphasis */
 			font-weight: 500;
 		}
 
 		/* Balance Bar Styles */
+		.balance-container {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
 		.balance-bar {
 			position: relative;
 			width: 80%;
@@ -490,7 +501,7 @@
 			position: fixed;
 			right: 20px;
 			top: 10px;
-			width: 60px;
+			width: 50px;
 			height: 30px;
 			background-color: #ccc;
 			border-radius: 15px;
@@ -538,7 +549,7 @@
 		}
 
 		#dark-mode-toggle.active .slider {
-			transform: translateX(30px);
+			transform: translateX(25px);
 		}
 		
 		#dark-mode-toggle:focus, .tooltip:focus {
@@ -735,8 +746,8 @@
 			100% {
 				opacity: 1;
 			}
-    </style>
 		}
+    </style>
 </head>
 <body>
     <div id="dark-mode-toggle">
@@ -839,7 +850,7 @@
 							<span class="tooltip">
 								<i class="fas fa-info-circle tooltip-icon"></i>
 								<span class="tooltiptext">
-									<h3>F1 Score</h3>
+									<h4>F1 Score</h4>
 									<p>The F1 Score is the harmonic mean of Precision and Recall.</p>
 									<ul>
 										<li>Formula: 2 * (Precision * Recall) / (Precision + Recall)</li>
@@ -856,7 +867,7 @@
 							<span class="tooltip">
 								<i class="fas fa-info-circle tooltip-icon"></i>
 								<span class="tooltiptext">
-									<h3>Accuracy</h3>
+									<h4>Accuracy</h4>
 									<p>Overall correctness of predictions.</p>
 									<ul>
 										<li>Formula: (TP + TN) / (TP + TN + FP + FN)</li>
@@ -875,7 +886,7 @@
 							<span class="tooltip">
 								<i class="fas fa-info-circle tooltip-icon"></i>
 								<span class="tooltiptext">
-									<h3>Precision</h3>
+									<h4>Precision</h4>
 									<p>Reliability of positive predictions.</p>
 									<ul>
 										<li>Formula: TP / (TP + FP)</li>
@@ -892,7 +903,7 @@
 							<span class="tooltip">
 								<i class="fas fa-info-circle tooltip-icon"></i>
 								<span class="tooltiptext">
-									<h3>Negative Predictive Value (NPV)</h3>
+									<h4>Negative Predictive Value (NPV)</h4>
 									<p>Reliability of negative predictions.</p>
 									<ul>
 										<li>Formula: TN / (TN + FN)</li>
@@ -911,7 +922,7 @@
 							<span class="tooltip">
 								<i class="fas fa-info-circle tooltip-icon"></i>
 								<span class="tooltiptext">
-									<h3>Recall</h3>
+									<h4>Recall</h4>
 									<p>Ability to find all positive instances.</p>
 									<ul>
 										<li>Formula: TP / (TP + FN)</li>
@@ -928,7 +939,7 @@
 							<span class="tooltip">
 								<i class="fas fa-info-circle tooltip-icon"></i>
 								<span class="tooltiptext">
-									<h3>Specificity</h3>
+									<h4>Specificity</h4>
 									<p>Ability to find all negative instances.</p>
 									<ul>
 										<li>Formula: TN / (TN + FP)</li>
