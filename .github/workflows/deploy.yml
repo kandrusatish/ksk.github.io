@@ -13,17 +13,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Remove this step if you don't need to install any npm dependencies
+    # If you have any dependencies, you can uncomment the next step
     # - name: Install dependencies
     #   run: npm install
 
-    - name: Build project
+    - name: Replace API Key in JS
       run: |
-        echo "API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env # Create an environment variable file with your API key
-        # You can run any build commands here if you have them, otherwise, you can skip this step
+        sed -i 's|API_KEY_PLACEHOLDER|'"${{ secrets.OPENAI_API_KEY }}"'|g' path/to/your/file.js
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
+        publish_dir: ./  # Adjust this path to your build output directory
