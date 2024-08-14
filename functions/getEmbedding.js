@@ -1,23 +1,17 @@
 const fetch = require('node-fetch');
 
-exports.handler = async function(event, context) {
-    const { text } = JSON.parse(event.body);
-
-    if (!text) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: "Text is required" }),
-        };
-    }
+exports.handler = async function (event, context) {
+    const body = JSON.parse(event.body);
+    const apiKey = process.env.OPENAI_API_KEY;
 
     const response = await fetch('https://api.openai.com/v1/embeddings', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-            input: text,
+            input: body.text,
             model: 'text-embedding-ada-002',
         }),
     });
@@ -30,7 +24,6 @@ exports.handler = async function(event, context) {
     }
 
     const data = await response.json();
-
     return {
         statusCode: 200,
         body: JSON.stringify(data),
