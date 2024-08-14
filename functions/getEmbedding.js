@@ -1,6 +1,6 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-exports.handler = async function (event, context) {
+export async function handler (event, context) {
     const body = JSON.parse(event.body);
     const apiKey = process.env.OPENAI_API_KEY;
 
@@ -28,4 +28,4 @@ exports.handler = async function (event, context) {
         statusCode: 200,
         body: JSON.stringify(data),
     };
-};
+}
