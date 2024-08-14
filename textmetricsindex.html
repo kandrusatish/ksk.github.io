@@ -287,6 +287,90 @@
             max-height: 100%; /* Ensure the canvas uses the available height */
         }
 
+        /* General error message styling */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .error-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .error-popup-content {
+            background-color: var(--container-bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            transform: scale(1);
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+
+        .error-popup-content:hover {
+            transform: scale(1.05);
+            background-color: var(--input-bg-color);
+        }
+
+        .close-popup {
+            color: var(--text-color);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .close-popup:hover,
+        .close-popup:focus {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+        }
+
+        #error-popup p {
+            font-size: 16px;
+            color: var(--text-color);
+            margin-top: 10px;
+            line-height: 1.5;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .error-popup-content button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .error-popup-content button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             main {
                 margin: 40px auto;
@@ -659,6 +743,13 @@
                 </div>
             </div>
         </section>
+        <!-- Error message -->
+        <div id="error-popup" class="error-popup" style="display: none;">
+            <div class="error-popup-content">
+                <span id="close-popup" class="close-popup">&times;</span>
+                <p id="popup-message"></p>
+            </div>
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -749,11 +840,11 @@
         let textGenEvaluationChartInstance = null;
 
         async function calculateSimilarity() {
-            const text1 = document.getElementById('text1').value.trim();
-            const text2 = document.getElementById('text2').value.trim();
+            try{
+                const text1 = document.getElementById('text1').value.trim();
+                const text2 = document.getElementById('text2').value.trim();
 
-            if (text1 && text2) {
-                try {
+                if (text1 && text2) {
                     const embedding1 = await getEmbedding(text1);
                     const embedding2 = await getEmbedding(text2);
 
@@ -810,14 +901,11 @@
                         { label: 'ROUGE-L Score', value: parseFloat(rougeScore), color: getColorForMetric(rougeScore) }
                     ]);
 
-                } catch (error) {
-                    document.getElementById('result-content').innerHTML = `<p>Error in fetching embeddings: ${error.message}</p>`;
-                    return;
+                } else {
+                    displayError("Please enter text in both fields.");
                 }
-            } else {
-                console.log("Error: Text input missing");
-                document.getElementById('result-content').innerHTML = '<p>Please enter text in both fields.</p>';
-                return;
+            } catch (error) {
+                displayError(`Error: ${error.message}`);
             }
         }
 
@@ -854,20 +942,26 @@
         }
 
         async function getEmbedding(text) {
-            const response = await fetch('/.netlify/functions/getEmbedding', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text }),
-            });
+            try {
+                const response = await fetch('/.netlify/functions/getEmbedding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch embeddings');
+                if (!response.ok) {
+                    const errorText = await response.text(); // Read the error text from the response
+                    throw new Error(`Failed to fetch embeddings: ${response.status} ${errorText}`);
+                }
+
+                const data = await response.json();
+                return data.data[0].embedding;
+            } catch (error) {
+                displayError(error.message); // Call a function to display the error
+                throw error; // Re-throw the error if you need further handling
             }
-
-            const data = await response.json();
-            return data.data[0].embedding;
         }
 
         function calculateCosineSimilarity(vec1, vec2) {
@@ -1176,6 +1270,24 @@
                     return 'rgba(220, 53, 69, 0.6)'; // Red
                 }
             }
+        }
+
+        function displayError(message) {
+            const popup = document.getElementById('error-popup');
+            const popupMessage = document.getElementById('popup-message');
+
+            popupMessage.textContent = message;
+            popup.style.display = 'flex';
+
+            document.getElementById('close-popup').onclick = function() {
+                popup.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == popup) {
+                    popup.style.display = 'none';
+                }
+            };
         }
 
         function resetFields() {

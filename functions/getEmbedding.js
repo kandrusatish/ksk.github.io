@@ -1,8 +1,7 @@
 const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
-    console.log("API Key:", process.env.OPENAI_API_KEY);
-
+    
     const body = JSON.parse(event.body);
     const apiKey = process.env.OPENAI_API_KEY;
 
