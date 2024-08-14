@@ -105,6 +105,12 @@
             box-sizing: border-box;
         }
 
+        #text1-count,
+        #text2-count {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
         button {
             background-color: var(--primary-color);
             color: #fff;
@@ -444,13 +450,18 @@
         <!-- Input Section -->
         <section id="single-vs-single-section" class="flex-container">
             <div class="flex-item">
-                <label for="text1">Source Text:</label>
-                <textarea id="text1" rows="4" placeholder="Enter the first text..."></textarea>
+                <div class="char-counter">
+                    <label for="text1">Source Text: <span id="text1-count">0/1000</span></label>
+                    <textarea id="text1" rows="4" placeholder="Enter the first text..." maxlength="1000"></textarea>
+                </div>
             </div>
+            
             <div class="flex-item">
-                <label for="text2">Target Text:</label>
-                <textarea id="text2" rows="4" placeholder="Enter the second text..."></textarea>
-            </div>
+                <div class="char-counter">
+                    <label for="text2">Target Text: <span id="text2-count">0/1000</span></label>
+                    <textarea id="text2" rows="4" placeholder="Enter the second text..." maxlength="1000"></textarea>
+                </div>
+            </div>            
             <div class="button-container">
                 <button id="calculate-button">Calculate Metrics</button>
                 <button id="reset-button">Reset</button>
@@ -826,10 +837,59 @@
 
             // Function to refresh charts with the correct theme
             function refreshCharts() {
-                updateChart('stringSimilarityChart', getDefaultStringSimilarityData());
-                updateChart('vectorSimilarityChart', getDefaultVectorSimilarityData());
-                updateChart('textGenEvaluationChart', getDefaultTextGenEvaluationData());
+                // Refresh each chart individually
+                refreshChart('stringSimilarityChart');
+                refreshChart('vectorSimilarityChart');
+                refreshChart('textGenEvaluationChart');
             }
+
+            function refreshChart(chartId) {
+                const chartInstance = getChartInstance(chartId);
+                if (chartInstance) {
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    const chartBackgroundColor = isDarkMode ? '#2e2e2e' : '#ffffff'; // Dark or light background
+                    const chartTextColor = isDarkMode ? '#e4e4e4' : '#333'; // Text color based on mode
+                    const chartGridColor = isDarkMode ? '#444' : '#ddd'; // Grid line color based on mode
+
+                    // Update chart options
+                    chartInstance.options.scales.y.ticks.color = chartTextColor;
+                    chartInstance.options.scales.y.grid.color = chartGridColor;
+                    chartInstance.options.scales.x.ticks.color = chartTextColor;
+                    chartInstance.options.scales.x.grid.color = chartGridColor;
+                    chartInstance.options.plugins.legend.labels.color = chartTextColor;
+
+                    // Update the chart container's background color dynamically based on the theme
+                    chartInstance.canvas.parentElement.style.backgroundColor = chartBackgroundColor;
+
+                    // Apply the updates
+                    chartInstance.update();
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const text1 = document.getElementById('text1');
+            const text1Count = document.getElementById('text1-count');
+            const text2 = document.getElementById('text2');
+            const text2Count = document.getElementById('text2-count');
+
+            text1.addEventListener('input', () => {
+                text1Count.textContent = `${text1.value.length}/1000`;
+                if (text1.value.length >= 1000) {
+                    text1Count.style.color = 'red';
+                } else {
+                    text1Count.style.color = '';
+                }
+            });
+
+            text2.addEventListener('input', () => {
+                text2Count.textContent = `${text2.value.length}/1000`;
+                if (text2.value.length >= 1000) {
+                    text2Count.style.color = 'red';
+                } else {
+                    text2Count.style.color = '';
+                }
+            });
         });
         
         document.getElementById('calculate-button').addEventListener('click', calculateSimilarity);
@@ -1166,65 +1226,77 @@
 
             let chartInstance = getChartInstance(chartId);
 
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Similarity Metrics',
-                        data: values,
-                        backgroundColor: backgroundColors,
-                        borderColor: backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1')),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                color: chartTextColor // Y-axis text color
-                            },
-                            grid: {
-                                color: chartGridColor // Y-axis grid color
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: chartTextColor, // X-axis text color
-                                font: {
-                                    size: 12, // Adjust the size to make it more readable
+            if (!chartInstance) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Similarity Metrics',
+                            data: values,
+                            backgroundColor: backgroundColors,
+                            borderColor: backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1')),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: chartTextColor // Y-axis text color
+                                },
+                                grid: {
+                                    color: chartGridColor // Y-axis grid color
                                 }
                             },
-                            grid: {
-                                color: chartGridColor // X-axis grid color
+                            x: {
+                                ticks: {
+                                    color: chartTextColor, // X-axis text color
+                                    font: {
+                                        size: 12, // Adjust the size to make it more readable
+                                    }
+                                },
+                                grid: {
+                                    color: chartGridColor // X-axis grid color
+                                }
                             }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: chartTextColor // Legend text color
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: chartTextColor // Legend text color
+                                }
                             }
-                        }
-                    },
-                    layout: {
-                        padding: {
-                            left: 10,
-                            right: 10,
-                            top: 10,
-                            bottom: 10
-                        }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    backgroundColor: chartBackgroundColor, // Chart background color
-                }
-            });
+                        },
+                        layout: {
+                            padding: {
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        backgroundColor: chartBackgroundColor, // Chart background color
+                    }
+                });
+            } else {
+                // Update the existing chart's data and appearance
+                chartInstance.data.labels = labels;
+                chartInstance.data.datasets[0].data = values;
+                chartInstance.data.datasets[0].backgroundColor = backgroundColors;
+                chartInstance.data.datasets[0].borderColor = backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1'));
+
+                chartInstance.options.scales.y.ticks.color = chartTextColor;
+                chartInstance.options.scales.y.grid.color = chartGridColor;
+                chartInstance.options.scales.x.ticks.color = chartTextColor;
+                chartInstance.options.scales.x.grid.color = chartGridColor;
+                chartInstance.options.plugins.legend.labels.color = chartTextColor;
+
+                chartInstance.update();
+            }
 
             // Update the chart container's background color dynamically based on the theme
             document.getElementById(chartId).parentElement.style.backgroundColor = chartBackgroundColor;
@@ -1294,6 +1366,9 @@
             document.getElementById('text1').value = '';
             document.getElementById('text2').value = '';
 
+            document.getElementById('text1-count').textContent = '0/1000';
+            document.getElementById('text2-count').textContent = '0/1000';
+
             setMetric('jaccard-result', '0');
             setMetric('levenshtein-result', '0');
             setMetric('dice-result', '0');
@@ -1306,17 +1381,7 @@
             setMetric('hamming-result', '0');
             setMetric('ngram-jaccard-result', '0');
 
-            resetChart('stringSimilarityChart');
-            resetChart('vectorSimilarityChart');
-            resetChart('textGenEvaluationChart');
-        }
-
-        function resetChart(chartId) {
-            let chartInstance = getChartInstance(chartId);
-            if (chartInstance) {
-                chartInstance.destroy();
-                chartInstance = null;
-            }
+            refreshCharts();  // Refresh all charts to their default state
         }
     </script>
 </body>
