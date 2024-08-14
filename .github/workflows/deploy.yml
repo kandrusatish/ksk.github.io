@@ -17,9 +17,9 @@ jobs:
     # - name: Install dependencies
     #   run: npm install
 
-    - name: Replace API Key in JS
+    - name: Replace API Key in HTML
       run: |
-        sed -i 's|API_KEY_PLACEHOLDER|'"${{ secrets.OPENAI_API_KEY }}"'|g' path/to/your/file.js
+        sed -i 's|API_KEY_PLACEHOLDER|'"${{ secrets.OPENAI_API_KEY }}"'|g' textmetricsindex.html
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
