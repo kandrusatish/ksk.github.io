@@ -2,7 +2,6 @@
   "name": "ksk.github.io",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +10,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "node-fetch": "^3.0.0"
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.11"
   }
 }
