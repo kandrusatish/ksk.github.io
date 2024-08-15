@@ -3,3 +3,7 @@ venv/
 
 # Node.js dependencies
 node_modules/
+# Local Netlify folder
+.netlify
+# Local vscode folder
+.vscode
