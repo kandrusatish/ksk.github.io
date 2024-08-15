@@ -1,1 +1,5 @@
-"node_modules/" 
+# Python virtual environment
+venv/
+
+# Node.js dependencies
+node_modules/
