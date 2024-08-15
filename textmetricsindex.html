@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Similarity Metrics Analyser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styling */
+        :root {
+            --primary-color: #007BFF;
+            --good-metric: #28a745;
+            --average-metric: #ffc107;
+            --bad-metric: #dc3545;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --container-bg-color: #fff;
+            --input-bg-color: #e9ecef;
+            --tooltip-bg-color: #555;
+            --padding: 20px;
+            --card-bg-color: #ffffff;
+        }
+
+        /* Dark Mode Variables */
+        body.dark-mode {
+            --primary-color: #0d6efd;
+            --good-metric: #198754;
+            --average-metric: #ffc107;
+            --bad-metric: #dc3545;
+            --background-color: #121212;
+            --text-color: #e4e4e4;
+            --container-bg-color: #1e1e1e;
+            --input-bg-color: #2e2e2e;
+            --tooltip-bg-color: #333;
+            --card-bg-color: #2a2a2a;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        main {
+            background-color: var(--container-bg-color);
+            padding: var(--padding);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+            margin: 5px auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.75rem;
+        }
+
+        section {
+            margin-bottom: var(--padding);
+            background-color: var(--input-bg-color);
+            padding: var(--padding);
+            border-radius: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #toggle-dark-mode {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-color); /* Ensure the icon color matches the text color */
+        }
+
+        #toggle-dark-mode i {
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5)); /* Add shadow for better visibility */
+        }
+
+        textarea,
+        select,
+        button {
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            box-sizing: border-box;
+        }
+
+        #text1-count,
+        #text2-count {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            width: auto;
+            padding: 10px 20px;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .flex-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .flex-item {
+            flex: 1;
+        }
+
+        .flex-item textarea {
+            width: 100%;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+            flex-direction: column;
+            max-width: 20%;
+        }
+
+        button:disabled {
+            background-color: #cccccc; /* Light gray background */
+            color: #666666; /* Dark gray text */
+            cursor: not-allowed;
+            border: 1px solid #aaaaaa; /* Light gray border */
+        }
+
+        /* General spinner style */
+        #loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            z-index: 9999;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        /* Dark mode spinner style */
+        body.dark-mode #loading-spinner {
+            background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+            color: var(--text-color); /* Spinner color adjusts to the text color in dark mode */
+        }
+
+        .result-section {
+            display: flex;
+            flex-direction: column;
+            padding: var(--padding);
+            background-color: var(--input-bg-color);
+            border-radius: 8px;
+            margin-top: var(--padding);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--container-bg-color);
+        }
+
+        .results-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+
+        .results-header button {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .results-header button:hover {
+            background-color: #0056b3;
+        }
+
+        .metric-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title strong {
+            margin-right: 10px;
+        }
+
+        .card-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltip-icon {
+            font-size: 1rem;
+            margin-left: 5px;
+            color: var(--primary-color);
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 400px; /* Increased from 300px */
+            background-color: var(--tooltip-bg-color);
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-size: 0.9rem;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--tooltip-bg-color) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .chart-container {
+            margin-top: 0; /* Ensure it aligns with the metric group */
+            padding: var(--padding);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1; /* Allow the container to expand within its parent */
+            max-width: 40%; /* Controls horizontal width */
+            height: 100%; /* Ensure the container takes up full available vertical space */
+            background-color: var(--container-bg-color); /* Use CSS variable for background */
+        }
+
+        canvas {
+            width: 100%; /* Make sure the chart fills the container horizontally */
+            height: 100%; /* Make sure the chart fills the container vertically */
+            max-height: 100%; /* Ensure the canvas uses the available height */
+        }
+
+        /* General error message styling */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .error-popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .error-popup-content {
+            background-color: var(--container-bg-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            transform: scale(1);
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+
+        .error-popup-content:hover {
+            transform: scale(1.05);
+            background-color: var(--input-bg-color);
+        }
+
+        .close-popup {
+            color: var(--text-color);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .close-popup:hover,
+        .close-popup:focus {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+        }
+
+        #error-popup p {
+            font-size: 16px;
+            color: var(--text-color);
+            margin-top: 10px;
+            line-height: 1.5;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .error-popup-content button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .error-popup-content button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            main {
+                margin: 40px auto;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .result-content {
+                margin-top: 15px;
+            }
+
+            .metric-group {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                margin-top: 20px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-icon {
+                margin-bottom: 10px;
+            }
+
+            .card-title {
+                margin-bottom: 10px;
+            }
+
+            .tooltip .tooltiptext {
+                width: 200px;
+                left: 0;
+                transform: translateX(0);
+            }
+
+            .chart-container {
+                flex-direction: column;
+                max-width: 100%;
+            }
+        }
+
+        .good-metric {
+            color: var(--good-metric);
+        }
+
+        .average-metric {
+            color: var(--average-metric);
+        }
+
+        .bad-metric {
+            color: var(--bad-metric);
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Text Similarity Metrics Analyser</h1>
+        <button id="toggle-dark-mode" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; font-size: 1.5rem;">
+            <i id="dark-mode-icon" class="fas fa-moon"></i>
+        </button>
+
+        <!-- Input Section -->
+        <section id="single-vs-single-section" class="flex-container">
+            <div class="flex-item">
+                <div class="char-counter">
+                    <label for="text1">Source Text: <span id="text1-count">0/1000</span></label>
+                    <textarea id="text1" rows="4" placeholder="Enter the first text (max. 1000 characters)..." maxlength="1000"></textarea>
+                </div>
+            </div>
+            
+            <div class="flex-item">
+                <div class="char-counter">
+                    <label for="text2">Target Text: <span id="text2-count">0/1000</span></label>
+                    <textarea id="text2" rows="4" placeholder="Enter the second text (max. 1000 characters)..." maxlength="1000"></textarea>
+                </div>
+            </div>            
+            <div class="button-container">
+                <button id="calculate-button">Calculate Metrics</button>
+                <button id="reset-button">Reset</button>
+            </div>
+        </section>
+
+       <!-- String-Based Similarity Metrics -->
+        <section class="result-section">
+            <div class="results-header">
+                <h3>String-Based Similarity Metrics</h3>
+            </div>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <div class="metric-group">
+                        <!-- Jaccard Similarity -->
+                        <div class="card">
+                            <i class="fas fa-grip-lines-vertical card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Jaccard Similarity</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Jaccard Similarity</strong>
+                                            <p>Measures the similarity between two sets by dividing the size of their intersection by the size of their union.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Higher values indicate greater similarity, with scores ranging from 0 (no similarity) to 1 (identical sets).</p>
+                                            <p><strong>Example:</strong> Comparing the sets {1, 2, 3} and {2, 3, 4} results in a Jaccard Similarity of 0.5, indicating a moderate level of similarity.</p>
+                                            <p><strong>Tip for Use:</strong> Jaccard Similarity is useful for comparing text data where the order of elements does not matter, such as in bag-of-words models or keyword matching.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Jaccard_index" target="_blank" style="color:#fff; text-decoration:underline;">Jaccard Index on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="jaccard-result">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Levenshtein Distance -->
+                        <div class="card">
+                            <i class="fas fa-arrows-alt-h card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Levenshtein Distance</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Levenshtein Distance</strong>
+                                            <p>Measures the number of single-character edits (insertions, deletions, substitutions) required to change one string into another.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Lower values indicate greater similarity. A value of 0 indicates the strings are identical. Raw values are normalised to the range of 0 to 1.</p>
+                                            <p><strong>Example:</strong> The distance between "kitten" and "sitting" is 3, as three edits are required.</p>
+                                            <p><strong>Tip for Use:</strong> Levenshtein Distance is ideal for applications where minor variations in text (like typos) need to be accounted for.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank" style="color:#fff; text-decoration:underline;">Levenshtein Distance on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="levenshtein-result">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Sorensen-Dice Coefficient -->
+                        <div class="card">
+                            <i class="fas fa-percent card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Sorensen-Dice Coefficient</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Sorensen-Dice Coefficient</strong>
+                                            <p>Measures the similarity between two sets by considering the number of matching bigrams.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Higher values indicate greater similarity, with scores ranging from 0 to 1.</p>
+                                            <p><strong>Example:</strong> Comparing the strings "night" and "nacht" yields a Sorensen-Dice Coefficient of 0.4.</p>
+                                            <p><strong>Tip for Use:</strong> Useful in applications where partial string matches are important, like plagiarism detection.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/S%C3%B8rensen%E2%80%93Dice_coefficient" target="_blank" style="color:#fff; text-decoration:underline;">Sorensen-Dice Coefficient on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="dice-result">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Jaro-Winkler Distance -->
+                        <div class="card">
+                            <i class="fas fa-random card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Jaro-Winkler Distance</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Jaro-Winkler Distance</strong>
+                                            <p>Measures the similarity between two strings by considering matching characters and transpositions.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Higher values indicate greater similarity, with scores ranging from 0 to 1.</p>
+                                            <p><strong>Example:</strong> The distance between "MARTHA" and "MARHTA" is 0.961, showing high similarity.</p>
+                                            <p><strong>Tip for Use:</strong> Particularly useful for matching short strings, like names.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance" target="_blank" style="color:#fff; text-decoration:underline;">Jaro-Winkler Distance on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="jaro-winkler-result">0</div>
+                            </div>
+                        </div>
+
+                        <!-- Hamming Distance -->
+                        <div class="card">
+                            <i class="fas fa-exchange-alt card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Hamming Distance</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Hamming Distance</strong>
+                                            <p>Measures the number of positions at which the corresponding characters in two strings are different. Applicable only for strings of equal length.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Lower values indicate greater similarity. A value of 0 indicates identical strings. Raw values are normalised to the range of 0 to 1.</p>
+                                            <p><strong>Example:</strong> The Hamming Distance between "1011101" and "1001001" is 2.</p>
+                                            <p><strong>Tip for Use:</strong> Ideal for error detection in binary strings.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Hamming_distance" target="_blank" style="color:#fff; text-decoration:underline;">Hamming Distance on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="hamming-result">0</div>
+                            </div>
+                        </div>
+
+                        <!-- N-gram Jaccard Similarity -->
+                        <div class="card">
+                            <i class="fas fa-vector-square card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>N-gram Jaccard Similarity</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>N-gram Jaccard Similarity</strong>
+                                            <p>Measures the similarity between two sets of n-grams by dividing the size of their intersection by the size of their union.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Higher values indicate greater similarity, with scores ranging from 0 to 1.</p>
+                                            <p><strong>Example:</strong> Comparing the bigrams in "night" and "nacht" results in a similarity score of 0.4.</p>
+                                            <p><strong>Tip for Use:</strong> Useful for comparing sequences where order matters, such as in DNA sequences or text analysis.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Jaccard_index" target="_blank" style="color:#fff; text-decoration:underline;">Jaccard Index on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="ngram-jaccard-result">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container flex-item">
+                    <canvas id="stringSimilarityChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vector-Based Similarity Metrics -->
+        <section class="result-section">
+            <div class="results-header">
+                <h3>Vector-Based Similarity Metrics</h3>
+            </div>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <div class="metric-group">
+                        <!-- Cosine Similarity -->
+                        <div class="card">
+                            <i class="fas fa-angle-double-right card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Cosine Similarity</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Cosine Similarity</strong>
+                                            <p>Cosine similarity measures how similar two texts are by comparing the angles between their word patterns.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Values closer to 1 mean the texts are very similar in terms of word usage, while values closer to 0 mean they are quite different.</p>
+                                            <p><strong>Example:</strong> Comparing two product descriptions for similar items will likely result in a high cosine similarity score.</p>
+                                            <p><strong>Tip for Use:</strong> Best used when you want to compare texts based on their overall content and structure rather than exact word matches.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Cosine_similarity" target="_blank" style="color:#fff; text-decoration:underline;">Cosine Similarity on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="cosine-result">0</div>
+                            </div>
+                        </div>                        
+
+                        <!-- Euclidean Distance -->
+                        <div class="card">
+                            <i class="fas fa-ruler card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Euclidean Distance</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Euclidean Distance</strong>
+                                            <p>Euclidean distance measures how far apart two texts are, treating each word as a point in a multi-dimensional space.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Lower values mean the texts are more similar, while higher values indicate they are more different.</p>
+                                            <p><strong>Example:</strong> If one text is a slightly revised version of another, the Euclidean distance between them will be small.</p>
+                                            <p><strong>Tip for Use:</strong> Use when you want to measure the overall difference between two texts, especially when small changes are expected.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Euclidean_distance" target="_blank" style="color:#fff; text-decoration:underline;">Euclidean Distance on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="euclidean-result">0</div>
+                            </div>
+                        </div>                        
+
+                        <!-- Dot Product -->
+                        <div class="card">
+                            <i class="fas fa-circle-notch card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>Dot Product</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>Dot Product</strong>
+                                            <p>The dot product compares two sets of text features by multiplying their corresponding values and adding the results. This helps see if the texts share similar themes.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Higher values indicate a stronger similarity in content or themes.</p>
+                                            <p><strong>Example:</strong> If two articles discuss similar topics using similar vocabulary, their dot product will be high.</p>
+                                            <p><strong>Tip for Use:</strong> Useful when you want to understand the overall alignment of two texts based on shared content.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/Dot_product" target="_blank" style="color:#fff; text-decoration:underline;">Dot Product on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="dot-product-result">0</div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+                <div class="chart-container flex-item">
+                    <canvas id="vectorSimilarityChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Text Generation Evaluation Metrics -->
+        <section class="result-section">
+            <div class="results-header">
+                <h3>Text Generation Evaluation Metrics</h3>
+            </div>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <div class="metric-group">
+                        <!-- BLEU Score -->
+                        <div class="card">
+                            <i class="fas fa-file-alt card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>BLEU Score</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <h4>BLEU Score</h4>
+                                            <p>Measures how similar a machine-generated text is to one or more reference texts. It compares n-grams, or groups of words, in the texts.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Scores range from 0 to 1, where higher scores indicate a closer match to the reference text.</p>
+                                            <p><strong>Example:</strong> Imagine generating a short summary of a news article. BLEU can help determine how closely your summary matches the key points of the original article.</p>
+                                            <p><strong>Tip for Use:</strong> BLEU is widely used in machine translation and text generation tasks to evaluate how well the generated text reflects the original content.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/BLEU" target="_blank" style="color:#fff; text-decoration:underline;">BLEU Score on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="bleu-result">0</div>
+                            </div>
+                        </div>                        
+
+                        <!-- ROUGE-L Score -->
+                        <div class="card">
+                            <i class="fas fa-file-contract card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>ROUGE-L Score</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <h4>ROUGE-L Score</h4>
+                                            <p>Evaluates the similarity between generated text and a reference text by focusing on the longest matching sequence of words.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Higher scores indicate a better match between the generated text and the reference, with values ranging from 0 to 1.</p>
+                                            <p><strong>Example:</strong> When summarizing a lengthy report, ROUGE-L can help assess how well the summary captures the critical sequences from the original text.</p>
+                                            <p><strong>Tip for Use:</strong> ROUGE-L is particularly useful for tasks like text summarization, where capturing the order of important content is crucial.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/ROUGE_(metric)" target="_blank" style="color:#fff; text-decoration:underline;">ROUGE-L Score on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="rouge-result">0</div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+                <div class="chart-container flex-item">
+                    <canvas id="textGenEvaluationChart"></canvas>
+                </div>
+            </div>
+        </section>
+        <!-- Error message -->
+        <div id="error-popup" class="error-popup" style="display: none;">
+            <div class="error-popup-content">
+                <span id="close-popup" class="close-popup">&times;</span>
+                <p id="popup-message"></p>
+            </div>
+        </div>
+
+        <div id="loading-spinner" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i> Calculating Metrics ...
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const text1 = document.getElementById('text1');
+            const text2 = document.getElementById('text2');
+            const resetButton = document.getElementById('reset-button');
+            const calculateButton = document.getElementById('calculate-button');
+
+            function updateButtonStates() {
+                const isText1Empty = text1.value.trim() === '';
+                const isText2Empty = text2.value.trim() === '';
+
+                // Enable/Disable Reset button
+                resetButton.disabled = isText1Empty && isText2Empty;
+
+                // Enable/Disable Calculate Metrics button
+                calculateButton.disabled = isText1Empty || isText2Empty;
+            }
+
+            // Initialize button states
+            updateButtonStates();
+
+            // Add event listeners to text areas to monitor input
+            text1.addEventListener('input', updateButtonStates);
+            text2.addEventListener('input', updateButtonStates);
+        });
+
+        // Dark mode toggle script with icon change
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('toggle-dark-mode');
+            const darkModeIcon = document.getElementById('dark-mode-icon');
+
+            // Initialize the charts with default data
+            initializeChart('stringSimilarityChart', getDefaultStringSimilarityData());
+            initializeChart('vectorSimilarityChart', getDefaultVectorSimilarityData());
+            initializeChart('textGenEvaluationChart', getDefaultTextGenEvaluationData());
+
+            // Check for saved dark mode preference and apply it
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+                refreshCharts(); // Refresh charts to apply dark mode settings
+            }
+
+            // Toggle dark mode on button click
+            toggleButton.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+
+                if (document.body.classList.contains('dark-mode')) {
+                    darkModeIcon.classList.remove('fa-moon');
+                    darkModeIcon.classList.add('fa-sun');
+                    localStorage.setItem('darkMode', 'true');
+                } else {
+                    darkModeIcon.classList.remove('fa-sun');
+                    darkModeIcon.classList.add('fa-moon');
+                    localStorage.setItem('darkMode', 'false');
+                }
+
+                refreshCharts(); // Refresh charts to apply the correct theme
+            });
+        });
+
+        function initializeChart(chartId, data) {
+            updateChart(chartId, data);
+        }
+
+        // Get default data for string similarity chart
+        function getDefaultStringSimilarityData() {
+            return [
+                { label: 'Jaccard Similarity', value: 0, color: getColorForMetric(0) },
+                { label: 'Levenshtein Distance', value: 0, color: getColorForMetric(0, true) },
+                { label: 'Sorensen-Dice Coefficient', value: 0, color: getColorForMetric(0) },
+                { label: 'Jaro-Winkler Distance', value: 0, color: getColorForMetric(0) },
+                { label: 'Hamming Distance', value: 0, color: getColorForMetric(0, true) },
+                { label: 'N-gram Jaccard Similarity', value: 0, color: getColorForMetric(0) }
+            ];
+        }
+
+        // Get default data for vector similarity chart
+        function getDefaultVectorSimilarityData() {
+            return [
+                { label: 'Cosine Similarity', value: 0, color: getColorForMetric(0) },
+                { label: 'Euclidean Distance', value: 0, color: getColorForMetric(0, true) },
+                { label: 'Dot Product', value: 0, color: getColorForMetric(0) }
+            ];
+        }
+
+        // Get default data for text generation evaluation chart
+        function getDefaultTextGenEvaluationData() {
+            return [
+                { label: 'BLEU Score', value: 0, color: getColorForMetric(0) },
+                { label: 'ROUGE-L Score', value: 0, color: getColorForMetric(0) }
+            ];
+        }
+
+        // Function to refresh charts with the correct theme
+        function refreshCharts() {
+            // Refresh each chart individually
+            refreshChart('stringSimilarityChart');
+            refreshChart('vectorSimilarityChart');
+            refreshChart('textGenEvaluationChart');
+        }
+
+        function refreshChart(chartId) {
+            const chartInstance = getChartInstance(chartId);
+            if (chartInstance) {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const chartBackgroundColor = isDarkMode ? '#2e2e2e' : '#ffffff'; // Dark or light background
+                const chartTextColor = isDarkMode ? '#e4e4e4' : '#333'; // Text color based on mode
+                const chartGridColor = isDarkMode ? '#444' : '#ddd'; // Grid line color based on mode
+
+                // Update chart options
+                chartInstance.options.scales.y.ticks.color = chartTextColor;
+                chartInstance.options.scales.y.grid.color = chartGridColor;
+                chartInstance.options.scales.x.ticks.color = chartTextColor;
+                chartInstance.options.scales.x.grid.color = chartGridColor;
+                chartInstance.options.plugins.legend.labels.color = chartTextColor;
+
+                // Update the chart container's background color dynamically based on the theme
+                chartInstance.canvas.parentElement.style.backgroundColor = chartBackgroundColor;
+
+                // Apply the updates
+                chartInstance.update();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const text1 = document.getElementById('text1');
+            const text1Count = document.getElementById('text1-count');
+            const text2 = document.getElementById('text2');
+            const text2Count = document.getElementById('text2-count');
+
+            text1.addEventListener('input', () => {
+                text1Count.textContent = `${text1.value.length}/1000`;
+                if (text1.value.length >= 1000) {
+                    text1Count.style.color = 'red';
+                } else {
+                    text1Count.style.color = '';
+                }
+            });
+
+            text2.addEventListener('input', () => {
+                text2Count.textContent = `${text2.value.length}/1000`;
+                if (text2.value.length >= 1000) {
+                    text2Count.style.color = 'red';
+                } else {
+                    text2Count.style.color = '';
+                }
+            });
+        });
+        
+        document.getElementById('calculate-button').addEventListener('click', calculateSimilarity);
+        document.getElementById('reset-button').addEventListener('click', resetFields);
+
+        let stringSimilarityChartInstance = null;
+        let vectorSimilarityChartInstance = null;
+        let textGenEvaluationChartInstance = null;
+
+        async function calculateSimilarity() {
+            const spinner = document.getElementById('loading-spinner');
+            const calculateButton = document.getElementById('calculate-button');
+            try {
+                // Show the loading spinner and disable the calculate button
+                spinner.style.display = 'flex'; // Use 'flex' to display it as a flex container
+                calculateButton.disabled = true;
+
+                const text1 = document.getElementById('text1').value.trim();
+                const text2 = document.getElementById('text2').value.trim();
+
+                if (text1 && text2) {
+                    const embedding1 = await getEmbedding(text1);
+                    const embedding2 = await getEmbedding(text2);
+
+                    // Vector-Based Metrics
+                    const cosineSimilarity = calculateCosineSimilarity(embedding1, embedding2);
+                    const euclideanDistance = calculateEuclideanDistance(embedding1, embedding2);
+                    const dotProduct = calculateDotProduct(embedding1, embedding2);
+
+                    // String-Based Metrics
+                    const jaccardSimilarity = calculateJaccardSimilarity(text1, text2);
+                    const levenshteinDistance = calculateNormalizedLevenshteinDistance(text1, text2);
+                    const sorensenDice = calculateSorensenDiceCoefficient(text1, text2);
+                    const jaroWinkler = calculateJaroWinklerDistance(text1, text2);
+                    const hammingDistance = calculateHammingDistance(text1, text2);
+                    const ngramJaccardSimilarity = calculateNgramJaccardSimilarity(text1, text2);
+
+                    // Additional Metrics
+                    const bleuScore = calculateBLEU(text1, text2);
+                    const rougeScore = calculateROUGE(text1, text2);
+
+                    // Update DOM elements with the metric values
+                    setMetric('jaccard-result', jaccardSimilarity);
+                    setMetric('levenshtein-result', levenshteinDistance, true);  // Lower is better
+                    setMetric('dice-result', sorensenDice);
+                    setMetric('jaro-winkler-result', jaroWinkler);
+                    setMetric('hamming-result', hammingDistance, true);  // Lower is better
+                    setMetric('ngram-jaccard-result', ngramJaccardSimilarity);
+
+                    setMetric('cosine-result', cosineSimilarity);
+                    setMetric('euclidean-result', euclideanDistance, true);  // Lower is better
+                    setMetric('dot-product-result', dotProduct);
+
+                    setMetric('bleu-result', bleuScore);
+                    setMetric('rouge-result', rougeScore);
+
+                    // Update charts for each metric group
+                    updateChart('stringSimilarityChart', [
+                        { label: 'Jaccard Similarity', value: parseFloat(jaccardSimilarity), color: getColorForMetric(jaccardSimilarity) },
+                        { label: 'Levenshtein Distance', value: parseFloat(levenshteinDistance), color: getColorForMetric(levenshteinDistance, true) },
+                        { label: 'Sorensen-Dice Coefficient', value: parseFloat(sorensenDice), color: getColorForMetric(sorensenDice) },
+                        { label: 'Jaro-Winkler Distance', value: parseFloat(jaroWinkler), color: getColorForMetric(jaroWinkler) },
+                        { label: 'Hamming Distance', value: parseFloat(hammingDistance), color: getColorForMetric(hammingDistance, true) },
+                        { label: 'N-gram Jaccard Similarity', value: parseFloat(ngramJaccardSimilarity), color: getColorForMetric(ngramJaccardSimilarity) }
+                    ]);
+
+                    updateChart('vectorSimilarityChart', [
+                        { label: 'Cosine Similarity', value: parseFloat(cosineSimilarity), color: getColorForMetric(cosineSimilarity) },
+                        { label: 'Euclidean Distance', value: parseFloat(euclideanDistance), color: getColorForMetric(euclideanDistance, true) },
+                        { label: 'Dot Product', value: parseFloat(dotProduct), color: getColorForMetric(dotProduct) }
+                    ]);
+
+                    updateChart('textGenEvaluationChart', [
+                        { label: 'BLEU Score', value: parseFloat(bleuScore), color: getColorForMetric(bleuScore) },
+                        { label: 'ROUGE-L Score', value: parseFloat(rougeScore), color: getColorForMetric(rougeScore) }
+                    ]);
+
+                } else {
+                    displayError("Please enter text in both fields.");
+                }
+            } catch (error) {
+                displayError(`Error: ${error.message}`);
+            } finally {
+                // Hide the loading spinner and re-enable the calculate button
+                spinner.style.display = 'none';
+                calculateButton.disabled = false;
+            }
+        }
+
+        function setMetric(id, value, isLowerBetter = false) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+                applyMetricClass(value, element, isLowerBetter);
+            }
+        }
+
+        function applyMetricClass(value, element, isLowerBetter = false) {
+            let className = '';
+
+            if (isLowerBetter) {
+                if (value < 0.25) {
+                    className = 'good-metric';
+                } else if (value < 0.5) {
+                    className = 'average-metric';
+                } else {
+                    className = 'bad-metric';
+                }
+            } else {
+                if (value > 0.75) {
+                    className = 'good-metric';
+                } else if (value > 0.5) {
+                    className = 'average-metric';
+                } else {
+                    className = 'bad-metric';
+                }
+            }
+
+            element.className = 'card-value ' + className;
+        }
+
+        async function getEmbedding(text) {
+            try {
+                const response = await fetch('/.netlify/functions/getEmbedding', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text }),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text(); // Read the error text from the response
+                    throw new Error(`Failed to fetch embeddings: ${response.status} ${errorText}`);
+                }
+
+                const data = await response.json();
+                return data.data[0].embedding;
+            } catch (error) {
+                displayError(error.message); // Call a function to display the error
+                throw error; // Re-throw the error if you need further handling
+            }
+        }
+
+        function calculateCosineSimilarity(vec1, vec2) {
+            const dotProd = vec1.reduce((acc, val, idx) => acc + val * vec2[idx], 0);
+            const mag1 = Math.sqrt(vec1.reduce((acc, val) => acc + val * val, 0));
+            const mag2 = Math.sqrt(vec2.reduce((acc, val) => acc + val * val, 0));
+            return (dotProd / (mag1 * mag2)).toFixed(3);
+        }
+
+        function calculateEuclideanDistance(vec1, vec2) {
+            return Math.sqrt(vec1.reduce((acc, val, idx) => acc + Math.pow(val - vec2[idx], 2), 0)).toFixed(3);
+        }
+
+        function calculateDotProduct(vec1, vec2) {
+            return vec1.reduce((acc, val, idx) => acc + val * vec2[idx], 0).toFixed(3);
+        }
+
+        // String-Based Similarity Metrics Implementation
+        function calculateJaccardSimilarity(text1, text2) {
+            const set1 = new Set(text1.toLowerCase().match(/\w+/g));
+            const set2 = new Set(text2.toLowerCase().match(/\w+/g));
+
+            const intersection = new Set([...set1].filter(word => set2.has(word)));
+            const union = new Set([...set1, ...set2]);
+
+            const result = (intersection.size / union.size).toFixed(3);
+            return isNaN(result) ? '0.000' : result;
+        }
+
+        function calculateLevenshteinDistance(text1, text2) {
+            const len1 = text1.length;
+            const len2 = text2.length;
+            const dp = Array(len1 + 1).fill(null).map(() => Array(len2 + 1).fill(null));
+
+            for (let i = 0; i <= len1; i++) dp[i][0] = i;
+            for (let j = 0; j <= len2; j++) dp[0][j] = j;
+
+            for (let i = 1; i <= len1; i++) {
+                for (let j = 1; j <= len2; j++) {
+                    const cost = text1[i - 1] === text2[j - 1] ? 0 : 1;
+                    dp[i][j] = Math.min(
+                        dp[i - 1][j] + 1,
+                        dp[i][j - 1] + 1,
+                        dp[i - 1][j - 1] + cost
+                    );
+                }
+            }
+
+            return dp[len1][len2];
+        }
+
+        function calculateNormalizedLevenshteinDistance(text1, text2) {
+            const levenshteinDistance = calculateLevenshteinDistance(text1, text2);
+            const maxLen = Math.max(text1.length, text2.length);
+            const normalizedDistance = (levenshteinDistance / maxLen).toFixed(3);
+            return isNaN(normalizedDistance) ? '0.000' : normalizedDistance;
+        }
+
+        function calculateSorensenDiceCoefficient(text1, text2) {
+            function getBigrams(str) {
+                let bigrams = [];
+                for (let i = 0; i < str.length - 1; i++) {
+                    bigrams.push(str[i] + str[i + 1]);
+                }
+                return bigrams;
+            }
+
+            let bigrams1 = getBigrams(text1);
+            let bigrams2 = getBigrams(text2);
+
+            let intersection = bigrams1.filter(bigram => bigrams2.includes(bigram)).length;
+            let totalBigrams = bigrams1.length + bigrams2.length;
+
+            let coefficient = (2 * intersection) / totalBigrams;
+            return coefficient.toFixed(3);
+        }
+
+        function calculateJaroWinklerDistance(s1, s2) {
+            const m = s1.length;
+            const n = s2.length;
+
+            if (m === 0) return n;
+            if (n === 0) return m;
+
+            const matchWindow = Math.floor(Math.max(m, n) / 2) - 1;
+            const matches = Array(m).fill(false);
+            const matchedChars = Array(n).fill(false);
+
+            let matchCount = 0;
+            for (let i = 0; i < m; i++) {
+                const start = Math.max(0, i - matchWindow);
+                const end = Math.min(n - 1, i + matchWindow);
+                for (let j = start; j <= end; j++) {
+                    if (!matchedChars[j] && s1[i] === s2[j]) {
+                        matches[i] = true;
+                        matchedChars[j] = true;
+                        matchCount++;
+                        break;
+                    }
+                }
+            }
+
+            if (matchCount === 0) return 0;
+
+            let t = 0;
+            let k = 0;
+            for (let i = 0; i < m; i++) {
+                if (matches[i]) {
+                    while (!matchedChars[k]) k++;
+                    if (s1[i] !== s2[k]) t++;
+                    k++;
+                }
+            }
+
+            t /= 2;
+            const jaro = (1 / 3) * (matchCount / m + matchCount / n + (matchCount - t) / matchCount);
+
+            const l = Math.min(s1.length, 4);
+            const p = 0.1;
+            const jaroWinkler = jaro + l * p * (1 - jaro);
+            return jaroWinkler.toFixed(3);
+        }
+
+        function calculateHammingDistance(text1, text2) {
+            if (text1.length !== text2.length) return 1.0; // Return the worst score (max distance) if lengths differ
+            let distance = 0;
+            for (let i = 0; i < text1.length; i++) {
+                if (text1[i] !== text2[i]) {
+                    distance++;
+                }
+            }
+            return (distance / text1.length).toFixed(3);
+        }
+
+        function calculateNgramJaccardSimilarity(text1, text2, n = 2) {
+            function getNgrams(str, n) {
+                let ngrams = new Set();
+                for (let i = 0; i < str.length - n + 1; i++) {
+                    ngrams.add(str.substring(i, i + n));
+                }
+                return ngrams;
+            }
+
+            let ngrams1 = getNgrams(text1, n);
+            let ngrams2 = getNgrams(text2, n);
+
+            let intersection = new Set([...ngrams1].filter(x => ngrams2.has(x)));
+            let union = new Set([...ngrams1, ...ngrams2]);
+
+            return (intersection.size / union.size).toFixed(3);
+        }
+
+        // Additional Metrics Implementation
+        function calculateBLEU(reference, candidate) {
+            const refWords = reference.split(' ');
+            const candWords = candidate.split(' ');
+
+            const matchCount = candWords.filter(word => refWords.includes(word)).length;
+            const precision = matchCount / candWords.length;
+
+            const result = precision.toFixed(3);
+            return isNaN(result) ? '0.000' : result;
+        }
+
+        function calculateROUGE(reference, candidate) {
+            const lcs = (str1, str2) => {
+                const m = str1.length;
+                const n = str2.length;
+                const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+
+                for (let i = 1; i <= m; i++) {
+                    for (let j = 1; j <= n; j++) {
+                        if (str1[i - 1] === str2[j - 1]) {
+                            dp[i][j] = dp[i - 1][j - 1] + 1;
+                        } else {
+                            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                        }
+                    }
+                }
+
+                return dp[m][n];
+            };
+
+            const lcsLength = lcs(reference, candidate);
+            const precision = lcsLength / candidate.length;
+            const recall = lcsLength / reference.length;
+            const f1 = (2 * precision * recall) / (precision + recall);
+
+            return f1.toFixed(3);
+        }
+
+        function updateChart(chartId, data) {
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const labels = data.map(d => d.label);
+            const values = data.map(d => d.value);
+            const backgroundColors = data.map(d => d.color || 'rgba(0, 0, 0, 0.6)');
+
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const chartBackgroundColor = isDarkMode ? '#2e2e2e' : '#ffffff'; // Dark or light background
+            const chartTextColor = isDarkMode ? '#e4e4e4' : '#333'; // Text color based on mode
+            const chartGridColor = isDarkMode ? '#444' : '#ddd'; // Grid line color based on mode
+
+            let chartInstance = getChartInstance(chartId);
+
+            if (!chartInstance) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Similarity Metrics',
+                            data: values,
+                            backgroundColor: backgroundColors,
+                            borderColor: backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1')),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: chartTextColor // Y-axis text color
+                                },
+                                grid: {
+                                    color: chartGridColor // Y-axis grid color
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: chartTextColor, // X-axis text color
+                                    font: {
+                                        size: 12, // Adjust the size to make it more readable
+                                    }
+                                },
+                                grid: {
+                                    color: chartGridColor // X-axis grid color
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: chartTextColor // Legend text color
+                                }
+                            }
+                        },
+                        layout: {
+                            padding: {
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        backgroundColor: chartBackgroundColor, // Chart background color
+                    }
+                });
+            } else {
+                // Update the existing chart's data and appearance
+                chartInstance.data.labels = labels;
+                chartInstance.data.datasets[0].data = values;
+                chartInstance.data.datasets[0].backgroundColor = backgroundColors;
+                chartInstance.data.datasets[0].borderColor = backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1'));
+
+                chartInstance.options.scales.y.ticks.color = chartTextColor;
+                chartInstance.options.scales.y.grid.color = chartGridColor;
+                chartInstance.options.scales.x.ticks.color = chartTextColor;
+                chartInstance.options.scales.x.grid.color = chartGridColor;
+                chartInstance.options.plugins.legend.labels.color = chartTextColor;
+
+                chartInstance.update();
+            }
+
+            // Update the chart container's background color dynamically based on the theme
+            document.getElementById(chartId).parentElement.style.backgroundColor = chartBackgroundColor;
+
+            setChartInstance(chartId, chartInstance);
+        }
+
+        function getChartInstance(chartId) {
+            if (chartId === 'stringSimilarityChart') {
+                return stringSimilarityChartInstance;
+            } else if (chartId === 'vectorSimilarityChart') {
+                return vectorSimilarityChartInstance;
+            } else if (chartId === 'textGenEvaluationChart') {
+                return textGenEvaluationChartInstance;
+            }
+        }
+
+        function setChartInstance(chartId, instance) {
+            if (chartId === 'stringSimilarityChart') {
+                stringSimilarityChartInstance = instance;
+            } else if (chartId === 'vectorSimilarityChart') {
+                vectorSimilarityChartInstance = instance;
+            } else if (chartId === 'textGenEvaluationChart') {
+                textGenEvaluationChartInstance = instance;
+            }
+        }
+
+        function getColorForMetric(value, isLowerBetter = false) {
+            if (isLowerBetter) {
+                if (value < 0.25) {
+                    return 'rgba(40, 167, 69, 0.6)'; // Green
+                } else if (value < 0.5) {
+                    return 'rgba(255, 193, 7, 0.6)'; // Yellow
+                } else {
+                    return 'rgba(220, 53, 69, 0.6)'; // Red
+                }
+            } else {
+                if (value > 0.75) {
+                    return 'rgba(40, 167, 69, 0.6)'; // Green
+                } else if (value > 0.5) {
+                    return 'rgba(255, 193, 7, 0.6)'; // Yellow
+                } else {
+                    return 'rgba(220, 53, 69, 0.6)'; // Red
+                }
+            }
+        }
+
+        function displayError(message) {
+            const popup = document.getElementById('error-popup');
+            const popupMessage = document.getElementById('popup-message');
+
+            popupMessage.textContent = message;
+            popup.style.display = 'flex';
+
+            document.getElementById('close-popup').onclick = function() {
+                popup.style.display = 'none';
+            };
+
+            window.onclick = function(event) {
+                if (event.target == popup) {
+                    popup.style.display = 'none';
+                }
+            };
+        }
+
+        function resetFields() {
+            // Reset the input fields and character counters
+            document.getElementById('text1').value = '';
+            document.getElementById('text2').value = '';
+
+            document.getElementById('text1-count').textContent = '0/1000';
+            document.getElementById('text2-count').textContent = '0/1000';
+
+            // Reset the metric display values
+            setMetric('jaccard-result', '0');
+            setMetric('levenshtein-result', '0');
+            setMetric('dice-result', '0');
+            setMetric('jaro-winkler-result', '0');
+            setMetric('cosine-result', '0');
+            setMetric('euclidean-result', '0');
+            setMetric('dot-product-result', '0');
+            setMetric('bleu-result', '0');
+            setMetric('rouge-result', '0');
+            setMetric('hamming-result', '0');
+            setMetric('ngram-jaccard-result', '0');
+
+            // Reset the charts to their default data
+            updateChart('stringSimilarityChart', getDefaultStringSimilarityData());
+            updateChart('vectorSimilarityChart', getDefaultVectorSimilarityData());
+            updateChart('textGenEvaluationChart', getDefaultTextGenEvaluationData());
+
+            // Refresh charts to apply the correct theme and styles
+            refreshCharts();
+
+            // Disable the buttons after reset
+            const resetButton = document.getElementById('reset-button');
+            const calculateButton = document.getElementById('calculate-button');
+
+            resetButton.disabled = true;
+            calculateButton.disabled = true;
+        }
+    </script>
+</body>
+
+</html>
