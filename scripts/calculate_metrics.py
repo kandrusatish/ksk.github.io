@@ -21,6 +21,8 @@ def calculate_metrics(text1, text2):
     return results
 
 if __name__ == '__main__':
+    #print(calculate_metrics("who are you?","what are you?"))
+    
     input_data = json.loads(sys.stdin.read())
     text1 = input_data['text1']
     text2 = input_data['text2']
