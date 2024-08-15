@@ -1,5 +1,6 @@
 [build]
   functions = "functions"
+  command = "pip install -r functions/requirements.txt"
 
 [functions]
   node_bundler = "esbuild"  # or "node-cjs" if you want to use commonjs
@@ -9,6 +10,3 @@
 
 [build.processing]
   skip_processing = false
-
-[build.command]
-  command = "pip install -r functions/requirements.txt"
