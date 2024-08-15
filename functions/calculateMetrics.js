@@ -25,4 +25,18 @@ async function calculateMetrics(text1, text2) {
     });
 }
 
-module.exports = calculateMetrics;
+exports.handler = async (event) => {
+    try {
+        const { text1, text2 } = JSON.parse(event.body);
+        const metrics = await calculateMetrics(text1, text2);
+        return {
+            statusCode: 200,
+            body: JSON.stringify(metrics),
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: error.message }),
+        };
+    }
+};
