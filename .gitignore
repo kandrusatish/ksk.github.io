@@ -1,9 +1,8 @@
 # Python virtual environment
 venv/
-
 # Node.js dependencies
 node_modules/
 # Local Netlify folder
 .netlify
-# Local vscode folder
-.vscode
+# Local env file for api key
+.env

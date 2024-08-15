@@ -744,7 +744,7 @@
                                         <span class="tooltiptext">
                                             <h4>BLEU Score</h4>
                                             <p>Measures how similar a machine-generated text is to one or more reference texts. It compares n-grams, or groups of words, in the texts.</p>
-                                            <p><strong>Metric Value Interpretation:</strong> Scores range from 0 to 1, where higher scores indicate a closer match to the reference text.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Accurate only if atleast 25 characters of text used. Scores range from 0 to 1, where higher scores indicate a closer match to the reference text.</p>
                                             <p><strong>Example:</strong> Imagine generating a short summary of a news article. BLEU can help determine how closely your summary matches the key points of the original article.</p>
                                             <p><strong>Tip for Use:</strong> BLEU is widely used in machine translation and text generation tasks to evaluate how well the generated text reflects the original content.</p>
                                             <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/BLEU" target="_blank" style="color:#fff; text-decoration:underline;">BLEU Score on Wikipedia</a></p>
@@ -1010,6 +1010,9 @@
 
                     // Call the backend to calculate BLEU, ROUGE, and METEOR
                     const metrics = await calculateMetrics(text1, text2);
+                    const bleuScore = metrics.bleu.bleu.toFixed(3);
+                    const rougeScore = metrics.rouge.rougeL.toFixed(3);
+                    const meteorScore = metrics.meteor.meteor.toFixed(3);
 
                     // Update DOM elements with the metric values
                     setMetric('jaccard-result', jaccardSimilarity);
@@ -1023,9 +1026,9 @@
                     setMetric('euclidean-result', euclideanDistance, true);  // Lower is better
                     setMetric('dot-product-result', dotProduct);
 
-                    setMetric('bleu-result', metrics.bleu.score);
-                    setMetric('rouge-result', metrics.rouge.score);
-                    setMetric('meteor-result', metrics.meteor.score);
+                    setMetric('bleu-result', bleuScore);
+                    setMetric('rouge-result', rougeScore);
+                    setMetric('meteor-result', meteorScore);
 
                     // Update charts for each metric group
                     updateChart('stringSimilarityChart', [

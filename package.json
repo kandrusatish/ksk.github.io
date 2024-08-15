@@ -1,14 +1,13 @@
 {
   "name": "ksk.github.io",
   "version": "1.0.0",
-  "main": "index.html",
+  "description": "A web application for text similarity metrics analysis",
   "scripts": {
+    "start": "serve .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Your Name",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "node-fetch": "^2.7.0"
   },
