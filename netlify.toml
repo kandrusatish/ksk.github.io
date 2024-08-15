@@ -3,3 +3,15 @@
 
 [functions]
   node_bundler = "esbuild"  # or "node-cjs" if you want to use commonjs
+
+[build.environment]
+  PYTHON_VERSION = "3.12.5"
+
+[build.processing]
+  skip_processing = false
+
+[build.command]
+  command = "pip install -r functions/requirements.txt"
+
+[build.functions]
+  directory = "functions"
