@@ -1008,11 +1008,10 @@
                     const hammingDistance = calculateHammingDistance(text1, text2);
                     const ngramJaccardSimilarity = calculateNgramJaccardSimilarity(text1, text2);
 
-                    // Call the backend to calculate BLEU, ROUGE, and METEOR
-                    const metrics = await calculateMetrics(text1, text2);
-                    const bleuScore = metrics.bleu.bleu.toFixed(3);
-                    const rougeScore = metrics.rouge.rougeL.toFixed(3);
-                    const meteorScore = metrics.meteor.meteor.toFixed(3);
+                    // Perform the BLEU, ROUGE, and METEOR calculations directly
+                    const bleuScore = calculateBLEU(text1, text2).toFixed(3);
+                    const rougeScore = calculateROUGE_L(text1, text2).f1.toFixed(3);
+                    const meteorScore = calculateMETEOR(text1, text2).meteor.toFixed(3);
 
                     // Update DOM elements with the metric values
                     setMetric('jaccard-result', jaccardSimilarity);
@@ -1064,27 +1063,92 @@
             }
         }
 
-        async function calculateMetrics(text1, text2) {
-            try {
-                const response = await fetch('/.netlify/functions/calculateMetrics', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text1, text2 }),
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Failed to calculate metrics: ${response.status} ${errorText}`);
-                }
-
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                displayError(error.message);
-                throw error;
+        // BLEU Score Calculation
+        function calculateBLEU(reference, candidate, n = 4) {
+            const weights = Array(n).fill(1 / n); // Uniform weights for n-grams
+            let score = 0;
+            for (let i = 1; i <= n; i++) {
+                score += weights[i - 1] * nGramPrecision(reference, candidate, i);
             }
+            const brevityPenalty = Math.min(1, Math.exp(1 - reference.split(' ').length / candidate.split(' ').length));
+            return brevityPenalty * score;
+        }
+
+        function nGramPrecision(reference, candidate, n) {
+            const referenceNGrams = getNGrams(reference, n);
+            const candidateNGrams = getNGrams(candidate, n);
+            let matchCount = 0;
+            candidateNGrams.forEach(nGram => {
+                if (referenceNGrams.includes(nGram)) {
+                    matchCount++;
+                    referenceNGrams.splice(referenceNGrams.indexOf(nGram), 1); // Remove to avoid double counting
+                }
+            });
+            return matchCount / candidateNGrams.length;
+        }
+
+        function getNGrams(text, n) {
+            const words = text.split(' ');
+            const nGrams = [];
+            for (let i = 0; i <= words.length - n; i++) {
+                nGrams.push(words.slice(i, i + n).join(' '));
+            }
+            return nGrams;
+        }
+
+        // ROUGE-L Score Calculation
+        function calculateROUGE_L(reference, candidate) {
+            const lcsLength = longestCommonSubsequence(reference.split(' '), candidate.split(' ')).length;
+            const recall = lcsLength / reference.split(' ').length;
+            const precision = lcsLength / candidate.split(' ').length;
+            const f1 = (2 * recall * precision) / (recall + precision + 1e-7); // Adding a small value to avoid division by zero
+            return { recall, precision, f1 };
+        }
+
+        function longestCommonSubsequence(refTokens, candTokens) {
+            const lcsMatrix = Array(refTokens.length + 1).fill(null).map(() => Array(candTokens.length + 1).fill(0));
+            for (let i = 1; i <= refTokens.length; i++) {
+                for (let j = 1; j <= candTokens.length; j++) {
+                    if (refTokens[i - 1] === candTokens[j - 1]) {
+                        lcsMatrix[i][j] = lcsMatrix[i - 1][j - 1] + 1;
+                    } else {
+                        lcsMatrix[i][j] = Math.max(lcsMatrix[i - 1][j], lcsMatrix[i][j - 1]);
+                    }
+                }
+            }
+            return extractLCS(lcsMatrix, refTokens, candTokens);
+        }
+
+        function extractLCS(lcsMatrix, refTokens, candTokens) {
+            let lcs = [];
+            let i = refTokens.length;
+            let j = candTokens.length;
+            while (i > 0 && j > 0) {
+                if (refTokens[i - 1] === candTokens[j - 1]) {
+                    lcs.unshift(refTokens[i - 1]);
+                    i--;
+                    j--;
+                } else if (lcsMatrix[i - 1][j] >= lcsMatrix[i][j - 1]) {
+                    i--;
+                } else {
+                    j--;
+                }
+            }
+            return lcs;
+        }
+
+        // METEOR Score Calculation
+        function calculateMETEOR(reference, candidate) {
+            const referenceTokens = reference.split(' ');
+            const candidateTokens = candidate.split(' ');
+
+            const matches = candidateTokens.filter(token => referenceTokens.includes(token)).length;
+            const precision = matches / candidateTokens.length;
+            const recall = matches / referenceTokens.length;
+
+            const fmean = (10 * precision * recall) / (9 * precision + recall + 1e-7); // Adding a small value to avoid division by zero
+
+            return { meteor: fmean };
         }
 
         function setMetric(id, value, isLowerBetter = false) {
