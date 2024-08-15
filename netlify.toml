@@ -6,7 +6,7 @@
   node_bundler = "esbuild"  # or "node-cjs" if you want to use commonjs
 
 [build.environment]
-  PYTHON_VERSION = "3.12.5"
+  PYTHON_VERSION = "3.8"
 
 [build.processing]
   skip_processing = false
