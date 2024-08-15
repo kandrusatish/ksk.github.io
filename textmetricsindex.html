@@ -148,6 +148,35 @@
             max-width: 20%;
         }
 
+        button:disabled {
+            background-color: #cccccc; /* Light gray background */
+            color: #666666; /* Dark gray text */
+            cursor: not-allowed;
+            border: 1px solid #aaaaaa; /* Light gray border */
+        }
+
+        /* General spinner style */
+        #loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            z-index: 9999;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        /* Dark mode spinner style */
+        body.dark-mode #loading-spinner {
+            background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
+            color: var(--text-color); /* Spinner color adjusts to the text color in dark mode */
+        }
+
         .result-section {
             display: flex;
             flex-direction: column;
@@ -761,10 +790,40 @@
                 <p id="popup-message"></p>
             </div>
         </div>
+
+        <div id="loading-spinner" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i> Calculating Metrics ...
+        </div>
+
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const text1 = document.getElementById('text1');
+            const text2 = document.getElementById('text2');
+            const resetButton = document.getElementById('reset-button');
+            const calculateButton = document.getElementById('calculate-button');
+
+            function updateButtonStates() {
+                const isText1Empty = text1.value.trim() === '';
+                const isText2Empty = text2.value.trim() === '';
+
+                // Enable/Disable Reset button
+                resetButton.disabled = isText1Empty && isText2Empty;
+
+                // Enable/Disable Calculate Metrics button
+                calculateButton.disabled = isText1Empty || isText2Empty;
+            }
+
+            // Initialize button states
+            updateButtonStates();
+
+            // Add event listeners to text areas to monitor input
+            text1.addEventListener('input', updateButtonStates);
+            text2.addEventListener('input', updateButtonStates);
+        });
 
         // Dark mode toggle script with icon change
         document.addEventListener('DOMContentLoaded', function() {
@@ -899,7 +958,13 @@
         let textGenEvaluationChartInstance = null;
 
         async function calculateSimilarity() {
-            try{
+            const spinner = document.getElementById('loading-spinner');
+            const calculateButton = document.getElementById('calculate-button');
+            try {
+                // Show the loading spinner and disable the calculate button
+                spinner.style.display = 'flex'; // Use 'flex' to display it as a flex container
+                calculateButton.disabled = true;
+
                 const text1 = document.getElementById('text1').value.trim();
                 const text2 = document.getElementById('text2').value.trim();
 
@@ -965,6 +1030,10 @@
                 }
             } catch (error) {
                 displayError(`Error: ${error.message}`);
+            } finally {
+                // Hide the loading spinner and re-enable the calculate button
+                spinner.style.display = 'none';
+                calculateButton.disabled = false;
             }
         }
 
@@ -1389,6 +1458,13 @@
 
             // Refresh charts to apply the correct theme and styles
             refreshCharts();
+
+            // Disable the buttons after reset
+            const resetButton = document.getElementById('reset-button');
+            const calculateButton = document.getElementById('calculate-button');
+
+            resetButton.disabled = true;
+            calculateButton.disabled = true;
         }
     </script>
 </body>
