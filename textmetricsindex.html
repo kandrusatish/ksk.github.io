@@ -1518,13 +1518,14 @@
             setMetric('levenshtein-result', '0');
             setMetric('dice-result', '0');
             setMetric('jaro-winkler-result', '0');
+            setMetric('hamming-result', '0');
+            setMetric('ngram-jaccard-result', '0');
             setMetric('cosine-result', '0');
             setMetric('euclidean-result', '0');
             setMetric('dot-product-result', '0');
             setMetric('bleu-result', '0');
             setMetric('rouge-result', '0');
-            setMetric('hamming-result', '0');
-            setMetric('ngram-jaccard-result', '0');
+            setMetric('meteor-result', '0');
 
             // Reset the charts to their default data
             updateChart('stringSimilarityChart', getDefaultStringSimilarityData());

@@ -1,12 +1,5 @@
 [build]
   functions = "functions"
-  command = "pip install -r functions/requirements.txt"
 
 [functions]
   node_bundler = "esbuild"
-
-[build.environment]
-  PYTHON_VERSION = "3.8"
-
-[build.processing]
-  skip_processing = false
