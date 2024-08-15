@@ -775,7 +775,29 @@
                                 </div>
                                 <div class="card-value" id="rouge-result">0</div>
                             </div>
-                        </div>                        
+                        </div>
+                        
+                        <!-- METEOR Score -->
+                        <div class="card">
+                            <i class="fas fa-file-alt card-icon"></i>
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <strong>METEOR Score</strong>
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle tooltip-icon"></i>
+                                        <span class="tooltiptext">
+                                            <strong>METEOR Score</strong>
+                                            <p>The METEOR score evaluates the similarity between generated text and a reference text, focusing on precision, recall, and alignment of words.</p>
+                                            <p><strong>Metric Value Interpretation:</strong> Scores range from 0 to 1, with higher scores indicating a closer match to the reference text.</p>
+                                            <p><strong>Example:</strong> Suppose you have a machine-generated translation of the sentence "The cat sits on the mat," and the reference translation is "The cat is sitting on the mat." The METEOR score would be high because of the strong overlap in meaning and the correct alignment of key words like "cat," "mat," and the action described.</p>
+                                            <p><strong>Tip for Use:</strong> METEOR is particularly effective in evaluating machine translation and summarization tasks, where capturing the meaning and fluency of the text is crucial.</p>
+                                            <p><strong>Learn More:</strong> <a href="https://en.wikipedia.org/wiki/METEOR" target="_blank" style="color:#fff; text-decoration:underline;">METEOR Score on Wikipedia</a></p>
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="card-value" id="meteor-result">0</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="chart-container flex-item">
@@ -890,7 +912,8 @@
         function getDefaultTextGenEvaluationData() {
             return [
                 { label: 'BLEU Score', value: 0, color: getColorForMetric(0) },
-                { label: 'ROUGE-L Score', value: 0, color: getColorForMetric(0) }
+                { label: 'ROUGE-L Score', value: 0, color: getColorForMetric(0) },
+                { label: 'METEOR Score', value: 0, color: getColorForMetric(0) } // Added METEOR Score
             ];
         }
 
@@ -985,9 +1008,8 @@
                     const hammingDistance = calculateHammingDistance(text1, text2);
                     const ngramJaccardSimilarity = calculateNgramJaccardSimilarity(text1, text2);
 
-                    // Additional Metrics
-                    const bleuScore = calculateBLEU(text1, text2);
-                    const rougeScore = calculateROUGE(text1, text2);
+                    // Call the backend to calculate BLEU, ROUGE, and METEOR
+                    const metrics = await calculateMetrics(text1, text2);
 
                     // Update DOM elements with the metric values
                     setMetric('jaccard-result', jaccardSimilarity);
@@ -1001,8 +1023,9 @@
                     setMetric('euclidean-result', euclideanDistance, true);  // Lower is better
                     setMetric('dot-product-result', dotProduct);
 
-                    setMetric('bleu-result', bleuScore);
-                    setMetric('rouge-result', rougeScore);
+                    setMetric('bleu-result', metrics.bleu.score);
+                    setMetric('rouge-result', metrics.rouge.score);
+                    setMetric('meteor-result', metrics.meteor.score);
 
                     // Update charts for each metric group
                     updateChart('stringSimilarityChart', [
@@ -1022,7 +1045,8 @@
 
                     updateChart('textGenEvaluationChart', [
                         { label: 'BLEU Score', value: parseFloat(bleuScore), color: getColorForMetric(bleuScore) },
-                        { label: 'ROUGE-L Score', value: parseFloat(rougeScore), color: getColorForMetric(rougeScore) }
+                        { label: 'ROUGE-L Score', value: parseFloat(rougeScore), color: getColorForMetric(rougeScore) },
+                        { label: 'METEOR Score', value: parseFloat(meteorScore), color: getColorForMetric(meteorScore) }
                     ]);
 
                 } else {
@@ -1034,6 +1058,29 @@
                 // Hide the loading spinner and re-enable the calculate button
                 spinner.style.display = 'none';
                 calculateButton.disabled = false;
+            }
+        }
+
+        async function calculateMetrics(text1, text2) {
+            try {
+                const response = await fetch('/.netlify/functions/calculateMetrics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text1, text2 }),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Failed to calculate metrics: ${response.status} ${errorText}`);
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                displayError(error.message);
+                throw error;
             }
         }
 
@@ -1240,45 +1287,6 @@
             let union = new Set([...ngrams1, ...ngrams2]);
 
             return (intersection.size / union.size).toFixed(3);
-        }
-
-        // Additional Metrics Implementation
-        function calculateBLEU(reference, candidate) {
-            const refWords = reference.split(' ');
-            const candWords = candidate.split(' ');
-
-            const matchCount = candWords.filter(word => refWords.includes(word)).length;
-            const precision = matchCount / candWords.length;
-
-            const result = precision.toFixed(3);
-            return isNaN(result) ? '0.000' : result;
-        }
-
-        function calculateROUGE(reference, candidate) {
-            const lcs = (str1, str2) => {
-                const m = str1.length;
-                const n = str2.length;
-                const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
-
-                for (let i = 1; i <= m; i++) {
-                    for (let j = 1; j <= n; j++) {
-                        if (str1[i - 1] === str2[j - 1]) {
-                            dp[i][j] = dp[i - 1][j - 1] + 1;
-                        } else {
-                            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-                        }
-                    }
-                }
-
-                return dp[m][n];
-            };
-
-            const lcsLength = lcs(reference, candidate);
-            const precision = lcsLength / candidate.length;
-            const recall = lcsLength / reference.length;
-            const f1 = (2 * precision * recall) / (precision + recall);
-
-            return f1.toFixed(3);
         }
 
         function updateChart(chartId, data) {
