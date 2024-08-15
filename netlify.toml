@@ -12,6 +12,3 @@
 
 [build.command]
   command = "pip install -r functions/requirements.txt"
-
-[build.functions]
-  directory = "functions"
