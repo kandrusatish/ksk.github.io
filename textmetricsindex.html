@@ -452,14 +452,14 @@
             <div class="flex-item">
                 <div class="char-counter">
                     <label for="text1">Source Text: <span id="text1-count">0/1000</span></label>
-                    <textarea id="text1" rows="4" placeholder="Enter the first text..." maxlength="1000"></textarea>
+                    <textarea id="text1" rows="4" placeholder="Enter the first text (max. 1000 characters)..." maxlength="1000"></textarea>
                 </div>
             </div>
             
             <div class="flex-item">
                 <div class="char-counter">
                     <label for="text2">Target Text: <span id="text2-count">0/1000</span></label>
-                    <textarea id="text2" rows="4" placeholder="Enter the second text..." maxlength="1000"></textarea>
+                    <textarea id="text2" rows="4" placeholder="Enter the second text (max. 1000 characters)..." maxlength="1000"></textarea>
                 </div>
             </div>            
             <div class="button-container">
@@ -800,72 +800,71 @@
 
                 refreshCharts(); // Refresh charts to apply the correct theme
             });
-
-            // Function to initialize charts with default data
-            function initializeChart(chartId, data) {
-                updateChart(chartId, data);
-            }
-
-            // Get default data for string similarity chart
-            function getDefaultStringSimilarityData() {
-                return [
-                    { label: 'Jaccard Similarity', value: 0, color: getColorForMetric(0) },
-                    { label: 'Levenshtein Distance', value: 0, color: getColorForMetric(0, true) },
-                    { label: 'Sorensen-Dice Coefficient', value: 0, color: getColorForMetric(0) },
-                    { label: 'Jaro-Winkler Distance', value: 0, color: getColorForMetric(0) },
-                    { label: 'Hamming Distance', value: 0, color: getColorForMetric(0, true) },
-                    { label: 'N-gram Jaccard Similarity', value: 0, color: getColorForMetric(0) }
-                ];
-            }
-
-            // Get default data for vector similarity chart
-            function getDefaultVectorSimilarityData() {
-                return [
-                    { label: 'Cosine Similarity', value: 0, color: getColorForMetric(0) },
-                    { label: 'Euclidean Distance', value: 0, color: getColorForMetric(0, true) },
-                    { label: 'Dot Product', value: 0, color: getColorForMetric(0) }
-                ];
-            }
-
-            // Get default data for text generation evaluation chart
-            function getDefaultTextGenEvaluationData() {
-                return [
-                    { label: 'BLEU Score', value: 0, color: getColorForMetric(0) },
-                    { label: 'ROUGE-L Score', value: 0, color: getColorForMetric(0) }
-                ];
-            }
-
-            // Function to refresh charts with the correct theme
-            function refreshCharts() {
-                // Refresh each chart individually
-                refreshChart('stringSimilarityChart');
-                refreshChart('vectorSimilarityChart');
-                refreshChart('textGenEvaluationChart');
-            }
-
-            function refreshChart(chartId) {
-                const chartInstance = getChartInstance(chartId);
-                if (chartInstance) {
-                    const isDarkMode = document.body.classList.contains('dark-mode');
-                    const chartBackgroundColor = isDarkMode ? '#2e2e2e' : '#ffffff'; // Dark or light background
-                    const chartTextColor = isDarkMode ? '#e4e4e4' : '#333'; // Text color based on mode
-                    const chartGridColor = isDarkMode ? '#444' : '#ddd'; // Grid line color based on mode
-
-                    // Update chart options
-                    chartInstance.options.scales.y.ticks.color = chartTextColor;
-                    chartInstance.options.scales.y.grid.color = chartGridColor;
-                    chartInstance.options.scales.x.ticks.color = chartTextColor;
-                    chartInstance.options.scales.x.grid.color = chartGridColor;
-                    chartInstance.options.plugins.legend.labels.color = chartTextColor;
-
-                    // Update the chart container's background color dynamically based on the theme
-                    chartInstance.canvas.parentElement.style.backgroundColor = chartBackgroundColor;
-
-                    // Apply the updates
-                    chartInstance.update();
-                }
-            }
         });
+
+        function initializeChart(chartId, data) {
+            updateChart(chartId, data);
+        }
+
+        // Get default data for string similarity chart
+        function getDefaultStringSimilarityData() {
+            return [
+                { label: 'Jaccard Similarity', value: 0, color: getColorForMetric(0) },
+                { label: 'Levenshtein Distance', value: 0, color: getColorForMetric(0, true) },
+                { label: 'Sorensen-Dice Coefficient', value: 0, color: getColorForMetric(0) },
+                { label: 'Jaro-Winkler Distance', value: 0, color: getColorForMetric(0) },
+                { label: 'Hamming Distance', value: 0, color: getColorForMetric(0, true) },
+                { label: 'N-gram Jaccard Similarity', value: 0, color: getColorForMetric(0) }
+            ];
+        }
+
+        // Get default data for vector similarity chart
+        function getDefaultVectorSimilarityData() {
+            return [
+                { label: 'Cosine Similarity', value: 0, color: getColorForMetric(0) },
+                { label: 'Euclidean Distance', value: 0, color: getColorForMetric(0, true) },
+                { label: 'Dot Product', value: 0, color: getColorForMetric(0) }
+            ];
+        }
+
+        // Get default data for text generation evaluation chart
+        function getDefaultTextGenEvaluationData() {
+            return [
+                { label: 'BLEU Score', value: 0, color: getColorForMetric(0) },
+                { label: 'ROUGE-L Score', value: 0, color: getColorForMetric(0) }
+            ];
+        }
+
+        // Function to refresh charts with the correct theme
+        function refreshCharts() {
+            // Refresh each chart individually
+            refreshChart('stringSimilarityChart');
+            refreshChart('vectorSimilarityChart');
+            refreshChart('textGenEvaluationChart');
+        }
+
+        function refreshChart(chartId) {
+            const chartInstance = getChartInstance(chartId);
+            if (chartInstance) {
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                const chartBackgroundColor = isDarkMode ? '#2e2e2e' : '#ffffff'; // Dark or light background
+                const chartTextColor = isDarkMode ? '#e4e4e4' : '#333'; // Text color based on mode
+                const chartGridColor = isDarkMode ? '#444' : '#ddd'; // Grid line color based on mode
+
+                // Update chart options
+                chartInstance.options.scales.y.ticks.color = chartTextColor;
+                chartInstance.options.scales.y.grid.color = chartGridColor;
+                chartInstance.options.scales.x.ticks.color = chartTextColor;
+                chartInstance.options.scales.x.grid.color = chartGridColor;
+                chartInstance.options.plugins.legend.labels.color = chartTextColor;
+
+                // Update the chart container's background color dynamically based on the theme
+                chartInstance.canvas.parentElement.style.backgroundColor = chartBackgroundColor;
+
+                // Apply the updates
+                chartInstance.update();
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             const text1 = document.getElementById('text1');
@@ -1363,12 +1362,14 @@
         }
 
         function resetFields() {
+            // Reset the input fields and character counters
             document.getElementById('text1').value = '';
             document.getElementById('text2').value = '';
 
             document.getElementById('text1-count').textContent = '0/1000';
             document.getElementById('text2-count').textContent = '0/1000';
 
+            // Reset the metric display values
             setMetric('jaccard-result', '0');
             setMetric('levenshtein-result', '0');
             setMetric('dice-result', '0');
@@ -1381,7 +1382,13 @@
             setMetric('hamming-result', '0');
             setMetric('ngram-jaccard-result', '0');
 
-            refreshCharts();  // Refresh all charts to their default state
+            // Reset the charts to their default data
+            updateChart('stringSimilarityChart', getDefaultStringSimilarityData());
+            updateChart('vectorSimilarityChart', getDefaultVectorSimilarityData());
+            updateChart('textGenEvaluationChart', getDefaultTextGenEvaluationData());
+
+            // Refresh charts to apply the correct theme and styles
+            refreshCharts();
         }
     </script>
 </body>
