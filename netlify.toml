@@ -1,9 +1,9 @@
 [build]
   functions = "functions"
-  command = "pip install -r requirements.txt"
+  command = "pip install -r functions/requirements.txt"
 
 [functions]
-  node_bundler = "esbuild"  # or "node-cjs" if you want to use commonjs
+  node_bundler = "esbuild"
 
 [build.environment]
   PYTHON_VERSION = "3.8"
