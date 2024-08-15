@@ -2,6 +2,7 @@ const { spawn } = require('child_process');
 
 async function calculateMetrics(text1, text2) {
     return new Promise((resolve, reject) => {
+        // Using 'python' since your environment points 'python' to Python 3
         const pythonProcess = spawn('python', ['scripts/calculate_metrics.py']);
 
         pythonProcess.stdin.write(JSON.stringify({ text1, text2 }));
