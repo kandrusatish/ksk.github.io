@@ -7,8 +7,10 @@
     <title>Text Similarity Metrics Analyser</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Styling */
+        /* Root Variables */
         :root {
             --primary-color: #007BFF;
             --good-metric: #28a745;
@@ -22,7 +24,7 @@
             --padding: 20px;
             --card-bg-color: #ffffff;
         }
-
+    
         /* Dark Mode Variables */
         body.dark-mode {
             --primary-color: #0d6efd;
@@ -36,7 +38,8 @@
             --tooltip-bg-color: #333;
             --card-bg-color: #2a2a2a;
         }
-
+    
+        /* Body Styling */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--background-color);
@@ -49,96 +52,204 @@
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-
+    
+        /* Header Styling */
+        #page-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--container-bg-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 10px 20px;
+        }
+    
+        body.dark-mode #page-header {
+            background-color: var(--container-bg-color);
+        }
+    
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+    
+        #page-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 0;
+            transition: color 0.3s ease;
+            flex: 1;
+        }
+    
+        /* Toggle Dark Mode Button */
+        #toggle-dark-mode {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            padding: 3px;
+            transition: transform 0.3s ease, color 0.3s ease;
+            position: absolute;
+            right: 20px;
+        }
+    
+        #toggle-dark-mode i {
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+    
+        #toggle-dark-mode:hover i {
+            transform: rotate(30deg);
+        }
+    
+        body.dark-mode #toggle-dark-mode {
+            color: var(--text-color);
+        }
+    
+        body.dark-mode #toggle-dark-mode i {
+            filter: drop-shadow(1px 1px 2px rgba(255, 255, 255, 0.5));
+        }
+    
+        /* Main Container Styling */
         main {
             background-color: var(--container-bg-color);
             padding: var(--padding);
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             max-width: 1000px;
             width: 100%;
             margin: 5px auto;
+            padding-top: 80px; /* Adjusted padding to account for the header height */
         }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            font-size: 1.75rem;
-        }
-
+    
+        /* Section Styling */
         section {
             margin-bottom: var(--padding);
             background-color: var(--input-bg-color);
             padding: var(--padding);
             border-radius: 8px;
         }
-
+    
+        /* Label Styling */
         label {
             font-weight: 500;
             color: var(--text-color);
             margin-bottom: 5px;
             display: block;
+            line-height: 1.6;
         }
-
-        #toggle-dark-mode {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--text-color); /* Ensure the icon color matches the text color */
-        }
-
-        #toggle-dark-mode i {
-            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5)); /* Add shadow for better visibility */
-        }
-
+    
+        /* Textarea and Select Styling */
         textarea,
-        select,
-        button {
-            padding: 10px;
+        select {
+            padding: 12px;
             margin-top: 5px;
-            border-radius: 5px;
+            border-radius: 8px;
             border: 1px solid #ced4da;
             box-sizing: border-box;
+            background-color: #ffffff; /* Set to white for better interactivity indication */
+            color: var(--text-color);
+            transition: all 0.3s ease;
         }
 
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background-color: #2e2e2e; /* Darker background for dark mode */
+            color: #e4e4e4; /* Light text color for readability in dark mode */
+        }
+
+        textarea:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            background-color: #ffffff; /* Ensure white background on focus in light mode */
+        }
+
+        body.dark-mode textarea:focus,
+        body.dark-mode select:focus {
+            background-color: #3a3a3a; /* Slightly lighter background on focus in dark mode */
+        }
+
+        textarea::placeholder {
+            color: #888;
+            opacity: 1;
+        }
+    
+        /* Character Count Styling */
         #text1-count,
         #text2-count {
             font-size: 0.9rem;
             color: var(--text-color);
         }
-
+    
+        /* Button Styling */
         button {
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            box-sizing: border-box;
             background-color: var(--primary-color);
             color: #fff;
             cursor: pointer;
-            margin-top: 10px;
-            display: block;
-            width: auto;
-            padding: 10px 20px;
-            border: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-
+    
+        body.dark-mode button {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+    
         button:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
         }
-
+    
+        body.dark-mode button:hover {
+            background-color: #003a75;
+        }
+    
+        button:focus {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+        }
+    
+        button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            border: 1px solid #aaaaaa;
+        }
+    
+        body.dark-mode button:disabled {
+            background-color: #444444;
+            color: #888888;
+            border: 1px solid #555555;
+        }
+    
+        /* Flexbox Container Styling */
         .flex-container {
             display: flex;
             gap: 20px;
         }
-
+    
         .flex-item {
             flex: 1;
         }
-
+    
         .flex-item textarea {
             width: 100%;
         }
-
+    
         .button-container {
             display: flex;
             justify-content: center;
@@ -147,15 +258,8 @@
             flex-direction: column;
             max-width: 20%;
         }
-
-        button:disabled {
-            background-color: #cccccc; /* Light gray background */
-            color: #666666; /* Dark gray text */
-            cursor: not-allowed;
-            border: 1px solid #aaaaaa; /* Light gray border */
-        }
-
-        /* General spinner style */
+    
+        /* Loading Spinner Styling */
         #loading-spinner {
             position: fixed;
             top: 0;
@@ -165,18 +269,27 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            background-color: rgba(255, 255, 255, 0.8);
             z-index: 9999;
             font-size: 1.5rem;
             color: var(--primary-color);
         }
-
-        /* Dark mode spinner style */
+    
         body.dark-mode #loading-spinner {
-            background-color: rgba(0, 0, 0, 0.8); /* Dark semi-transparent background */
-            color: var(--text-color); /* Spinner color adjusts to the text color in dark mode */
+            background-color: rgba(0, 0, 0, 0.8);
+            color: var(--text-color);
         }
-
+    
+        #loading-spinner i {
+            animation: spin 1.2s linear infinite;
+        }
+    
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    
+        /* Result Section Styling */
         .result-section {
             display: flex;
             flex-direction: column;
@@ -185,7 +298,8 @@
             border-radius: 8px;
             margin-top: var(--padding);
         }
-
+    
+        /* Results Header Styling */
         .results-header {
             display: flex;
             justify-content: space-between;
@@ -194,13 +308,14 @@
             padding-bottom: 10px;
             border-bottom: 1px solid var(--container-bg-color);
         }
-
+    
         .results-header h3 {
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             color: var(--text-color);
+            line-height: 1.4;
         }
-
+    
         .results-header button {
             background-color: var(--primary-color);
             color: #fff;
@@ -210,71 +325,80 @@
             cursor: pointer;
             font-size: 0.9rem;
         }
-
+    
         .results-header button:hover {
             background-color: #0056b3;
         }
-
+    
+        /* Metric Group and Card Styling */
         .metric-group {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
-
+    
         .card {
             background-color: var(--card-bg-color);
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             padding: 15px;
             display: flex;
             align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+    
+        .card:hover {
+            transform: translateY(-3px);
+        }
+    
         .card-icon {
             font-size: 1.5rem;
             margin-right: 15px;
             color: var(--primary-color);
         }
-
+    
         .card-content {
             flex: 1;
         }
-
+    
         .card-title {
             font-size: 1.1rem;
             margin: 0;
             display: flex;
             align-items: center;
         }
-
+    
         .card-title strong {
             margin-right: 10px;
         }
-
+    
         .card-value {
             font-size: 1.5rem;
             font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
-
+    
+        /* Tooltip Styling */
         .tooltip {
             position: relative;
             cursor: pointer;
         }
-
+    
         .tooltip .tooltip-icon {
             font-size: 1rem;
             margin-left: 5px;
             color: var(--primary-color);
         }
-
+    
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 400px; /* Increased from 300px */
+            width: 400px;
             background-color: var(--tooltip-bg-color);
             color: #fff;
             text-align: left;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             position: absolute;
             z-index: 1;
@@ -285,7 +409,7 @@
             transition: opacity 0.3s ease-in-out;
             font-size: 0.9rem;
         }
-
+    
         .tooltip .tooltiptext::after {
             content: "";
             position: absolute;
@@ -296,38 +420,46 @@
             border-style: solid;
             border-color: var(--tooltip-bg-color) transparent transparent transparent;
         }
-
+    
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
         }
-
+    
+        /* Chart Container Styling */
         .chart-container {
-            margin-top: 0; /* Ensure it aligns with the metric group */
+            margin-top: 0; /* Align with the metric group */
             padding: var(--padding);
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: var(--container-bg-color);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
-            flex: 1; /* Allow the container to expand within its parent */
-            max-width: 40%; /* Controls horizontal width */
-            height: 100%; /* Ensure the container takes up full available vertical space */
-            background-color: var(--container-bg-color); /* Use CSS variable for background */
+            flex: 1;
+            max-width: 40%;
+            height: 100%;
         }
 
+        body.dark-mode .chart-container {
+            background-color: var(--container-bg-color); /* Ensure consistent look in dark mode */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Shadow for dark mode */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border for dark mode */
+        }
+    
         canvas {
-            width: 100%; /* Make sure the chart fills the container horizontally */
-            height: 100%; /* Make sure the chart fills the container vertically */
-            max-height: 100%; /* Ensure the canvas uses the available height */
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
         }
-
-        /* General error message styling */
+    
+        /* Error Popup Styling */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
+    
         .error-popup {
             display: none;
             position: fixed;
@@ -343,7 +475,7 @@
             backdrop-filter: blur(5px);
             animation: fadeIn 0.3s ease-in-out;
         }
-
+    
         .error-popup-content {
             background-color: var(--container-bg-color);
             padding: 20px;
@@ -355,13 +487,14 @@
             transform: scale(1);
             transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
         }
-
+    
         .error-popup-content:hover {
             transform: scale(1.05);
             background-color: var(--input-bg-color);
         }
-
-        .close-popup {
+    
+                /* Close Popup Button */
+                .close-popup {
             color: var(--text-color);
             position: absolute;
             top: 10px;
@@ -380,6 +513,7 @@
             color: var(--primary-color);
         }
 
+        /* Error Popup Text Styling */
         #error-popup p {
             font-size: 16px;
             color: var(--text-color);
@@ -389,6 +523,7 @@
             animation: fadeIn 0.5s ease-in-out;
         }
 
+        /* Error Popup Button Styling */
         .error-popup-content button {
             background-color: var(--primary-color);
             color: #fff;
@@ -406,6 +541,7 @@
             transform: translateY(-2px);
         }
 
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
             main {
                 margin: 40px auto;
@@ -455,6 +591,7 @@
             }
         }
 
+        /* Metric Color Indicators */
         .good-metric {
             color: var(--good-metric);
         }
@@ -466,15 +603,26 @@
         .bad-metric {
             color: var(--bad-metric);
         }
-    </style>
+    </style> 
+            
 </head>
 
 <body>
+
+    <header id="page-header">
+        <div class="header-content">
+            <h1>Text Similarity Metrics Analyser</h1>
+            <button id="toggle-dark-mode">
+                <i id="dark-mode-icon" class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
     <main>
-        <h1>Text Similarity Metrics Analyser</h1>
+        <!-- <h1>Text Similarity Metrics Analyser</h1>
         <button id="toggle-dark-mode" style="position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; font-size: 1.5rem;">
             <i id="dark-mode-icon" class="fas fa-moon"></i>
-        </button>
+        </button> -->
 
         <!-- Input Section -->
         <section id="single-vs-single-section" class="flex-container">
@@ -1369,81 +1517,72 @@
 
             let chartInstance = getChartInstance(chartId);
 
-            if (!chartInstance) {
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Similarity Metrics',
-                            data: values,
-                            backgroundColor: backgroundColors,
-                            borderColor: backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1')),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: chartTextColor // Y-axis text color
-                                },
-                                grid: {
-                                    color: chartGridColor // Y-axis grid color
+            // If a chart instance already exists, destroy it before creating a new one
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Create a new chart instance
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Similarity Metrics',
+                        data: values,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: chartTextColor // Y-axis text color
+                            },
+                            grid: {
+                                color: chartGridColor // Y-axis grid color
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: chartTextColor, // X-axis text color
+                                font: {
+                                    size: 12, // Adjust the size to make it more readable
                                 }
                             },
-                            x: {
-                                ticks: {
-                                    color: chartTextColor, // X-axis text color
-                                    font: {
-                                        size: 12, // Adjust the size to make it more readable
-                                    }
-                                },
-                                grid: {
-                                    color: chartGridColor // X-axis grid color
-                                }
+                            grid: {
+                                color: chartGridColor // X-axis grid color
                             }
-                        },
-                        plugins: {
-                            legend: {
-                                labels: {
-                                    color: chartTextColor // Legend text color
-                                }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: chartTextColor // Legend text color
                             }
-                        },
-                        layout: {
-                            padding: {
-                                left: 10,
-                                right: 10,
-                                top: 10,
-                                bottom: 10
-                            }
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        backgroundColor: chartBackgroundColor, // Chart background color
-                    }
-                });
-            } else {
-                // Update the existing chart's data and appearance
-                chartInstance.data.labels = labels;
-                chartInstance.data.datasets[0].data = values;
-                chartInstance.data.datasets[0].backgroundColor = backgroundColors;
-                chartInstance.data.datasets[0].borderColor = backgroundColors.map(color => color.replace(/[^,]+(?=\))/, '1'));
-
-                chartInstance.options.scales.y.ticks.color = chartTextColor;
-                chartInstance.options.scales.y.grid.color = chartGridColor;
-                chartInstance.options.scales.x.ticks.color = chartTextColor;
-                chartInstance.options.scales.x.grid.color = chartGridColor;
-                chartInstance.options.plugins.legend.labels.color = chartTextColor;
-
-                chartInstance.update();
-            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 10,
+                            top: 10,
+                            bottom: 10
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    backgroundColor: chartBackgroundColor, // Chart background color
+                }
+            });
 
             // Update the chart container's background color dynamically based on the theme
             document.getElementById(chartId).parentElement.style.backgroundColor = chartBackgroundColor;
 
+            // Store the new chart instance
             setChartInstance(chartId, chartInstance);
         }
 
